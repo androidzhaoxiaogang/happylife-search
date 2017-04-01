@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.happylifeplat.service.search.mapper.ProviderRegionEsMapper" >
+    <resultMap id="ResultMap" type="com.happylifeplat.service.search.entity.ProviderRegionEs">
+        <result column="provider_id" property="providerId" jdbcType="VARCHAR"/>
+        <result column="administrative_region_id" property="administrativeRegionId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="leaf_checked_number" property="leafCheckedNumber" jdbcType="INTEGER"/>
+        <result column="leaf_number" property="leafNumber" jdbcType="INTEGER"/>
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="listByCreateTime" resultMap="ResultMap" parameterType="java.lang.String">
+        SELECT
+         g.id as goods_id,
+         r.provider_id,
+         r.administrative_region_id,
+         r.status,
+         r.leaf_checked_number,
+         r.leaf_number
+         FROM service_provider_administrative_region r LEFT JOIN goods  g on g.provider_id=r.provider_id
+         WHERE  1= 1 and g.is_disable=0 and g.is_invalid=0
+         AND   create_time  > #{createTime ,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

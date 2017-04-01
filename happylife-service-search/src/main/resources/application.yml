@@ -1,0 +1,16 @@
+server:
+  port: 8087
+  address: localhost
+
+
+logging:
+    level:
+        root: error
+        org.springframework.web: debug
+        org.apache.ibatis: debug
+        com.happylifeplat.bonuspoint: debug
+        com.happylifeplat.lottery: debug
+        com.happylifeplat: debug
+    path: "./logs"
+
+

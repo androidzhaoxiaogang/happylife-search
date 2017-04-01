@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="com.happylifeplat.service.search.client.ElasticSearchClient">
+        <constructor-arg value="${es.cluster.name}"/><!-- cluster.name -->
+        <constructor-arg value="${es.host}"/><!-- ip -->
+        <constructor-arg value="${es.port}"/><!-- port -->
+    </bean>
+    <bean id="jobInit" class="com.happylifeplat.service.search.init.JobInit" />
+
+    <!--数据源-->
+    <import resource="spring-dataSource.xml"/>
+    <!-- 引入dubbo配置 -->
+    <import resource="dubbo-provider.xml"/>
+
+    <!-- 引入job配置 -->
+    <import resource="spring-jobs.xml"/>
+
+</beans>

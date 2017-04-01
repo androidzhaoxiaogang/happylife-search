@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.happylifeplat.service.search.mapper.GoodsEsMapper" >
+    <resultMap id="ResultMap" type="com.happylifeplat.service.search.entity.GoodsEs">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="barcode" property="barcode" jdbcType="VARCHAR"/>
+        <result column="mnemonic_code" property="mnemonicCode" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="cost_price" property="costPrice" jdbcType="DECIMAL"/>
+        <result column="original_price" property="originalPrice" jdbcType="DECIMAL"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="goods_type_id" property="goodsTypeId" jdbcType="VARCHAR"/>
+        <result column="goods_category_id" property="goodsCategoryId" jdbcType="VARCHAR"/>
+        <result column="provider_id" property="providerId" jdbcType="VARCHAR"/>
+        <result column="is_disable" property="disable" jdbcType="TINYINT"/>
+        <result column="thumbnail" property="thumbnail" jdbcType="VARCHAR"/>
+        <result column="verify_status" property="verifyStatus" jdbcType="INTEGER"/>
+        <result column="has_deposit" property="hasDeposit" jdbcType="TINYINT"/>
+        <result column="is_invalid" property="invalid" jdbcType="TINYINT"/>
+        <result column="pay_type" property="payType" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID, NAME, CODE, BARCODE, MNEMONIC_CODE, PRICE, ORIGINAL_PRICE,COST_PRICE, `INDEX`, STATUS, PRODUCTION_BATCH,
+        PRODUCTION_DATE, DEFAULT_PRICKLE,GOODS_CATEGORY_ID, GOODS_TYPE_ID,GOODS_ATTR_GROUP_ID, PROVIDER_ID, SHELF_LIFE,
+        FREIGHT_TEMPLATE, SALE_TIME, IS_MERGE_STOCK, CREATE_TIME, IS_DISABLE,
+        THUMBNAIL,WEIGHT,USER_AGREEMENT_TITLE,DEFAULT_UNIT,HAS_DEPOSIT,VERIFY_STATUS,INVALID_DATE,IS_INVALID,PAY_TYPE,UPDATE_TIME,UPDATOR
+    </sql>
+
+    <select id="listByUpdateTime" resultMap="ResultMap" parameterType="java.lang.String">
+        SELECT    <include refid="Base_Column_List"/>
+        FROM goods WHERE  1= 1
+        AND   update_time  > #{updateTime ,jdbcType=VARCHAR}
+    </select>
+
+</mapper>
