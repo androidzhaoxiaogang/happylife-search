@@ -1,6 +1,7 @@
 package com.happylifeplat.service.search.mapper;
 
 import com.happylifeplat.service.search.entity.GoodsEs;
+import com.happylifeplat.service.search.query.GoodsPage;
 
 import java.util.List;
 
@@ -22,4 +23,12 @@ public interface GoodsEsMapper {
      * @return List<GoodsEs>
      */
     List<GoodsEs> listByUpdateTime(String updateTime);
+
+
+    /**
+     * 分页查询商品
+     * @param goodsPage 分页参数
+     * @return List<GoodsEs>
+     */
+    List<GoodsEs> listPage(GoodsPage goodsPage);
 }

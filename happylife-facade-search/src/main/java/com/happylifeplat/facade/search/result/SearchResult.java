@@ -1,6 +1,9 @@
-package com.happylifeplat.facade.search.entity;
+package com.happylifeplat.facade.search.result;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -13,10 +16,24 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @date 2017/3/24 15:15
  * @since JDK 1.8
  */
-public class SearchResult {
-    private int code; //返回码,0表示success
-    private String message;//消息
-    private Object result;//搜索结果集
+public class SearchResult implements Serializable {
+
+    private static final long serialVersionUID = -5917876107104499384L;
+    /**
+     * 状态码
+     */
+    private int code;
+
+    /**
+     * 返回消息提示
+     */
+    private String message;
+
+    /**
+     * 实体结果集合
+     */
+    private List<EntityResult> entityResultList;
+
 
     public int getCode() {
         return code;
@@ -34,12 +51,12 @@ public class SearchResult {
         this.message = message;
     }
 
-    public Object getResult() {
-        return result;
+    public List<EntityResult> getEntityResultList() {
+        return entityResultList;
     }
 
-    public void setResult(Object result) {
-        this.result = result;
+    public void setEntityResultList(List<EntityResult> entityResultList) {
+        this.entityResultList = entityResultList;
     }
 
     @Override

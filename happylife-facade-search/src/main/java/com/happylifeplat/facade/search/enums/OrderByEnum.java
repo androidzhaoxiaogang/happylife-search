@@ -10,7 +10,7 @@ package com.happylifeplat.facade.search.enums;
  * @date 2017/3/30 14:54
  * @since JDK 1.8
  */
-public enum OrderBy {
+public enum OrderByEnum {
 
     /**
      * 升序

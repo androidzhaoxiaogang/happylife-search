@@ -1,6 +1,7 @@
 package com.happylifeplat.service.search.mapper;
 
 import com.happylifeplat.service.search.entity.ProviderRegionEs;
+import com.happylifeplat.service.search.query.RegionPage;
 
 import java.util.List;
 
@@ -22,4 +23,12 @@ public interface ProviderRegionEsMapper {
      * @return List<ProviderRegionEs>
      */
     List<ProviderRegionEs> listByCreateTime(String createTime);
+
+    /**
+     * 分页查询供应商服务范围
+     * @param regionPage 分页参数
+     * @return List<ProviderRegionEs>
+     */
+    List<ProviderRegionEs> listPage(RegionPage regionPage);
+
 }

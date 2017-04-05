@@ -23,4 +23,17 @@
          AND   create_time  > #{createTime ,jdbcType=VARCHAR}
     </select>
 
+    <select id="listPage" resultMap="ResultMap" parameterType="com.happylifeplat.service.search.query.RegionPage">
+        SELECT
+        g.id as goods_id,
+        r.provider_id,
+        r.administrative_region_id,
+        r.status,
+        r.leaf_checked_number,
+        r.leaf_number
+        FROM service_provider_administrative_region r LEFT JOIN goods  g on g.provider_id=r.provider_id
+        WHERE  1= 1 and g.is_disable=0 and g.is_invalid=0
+        AND   create_time  > #{createTime ,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

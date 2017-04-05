@@ -1,23 +1,23 @@
-package com.happylifeplat.service.search.entity;
+package com.happylifeplat.facade.search.result;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * <p>Description: .</p>
  * <p>Company: 深圳市旺生活互联网科技有限公司</p>
  * <p>Copyright: 2015-2017 happylifeplat.com All Rights Reserved</p>
- *  存放在es里的商品实体类
+ *  返回实体类
  * @author yu.xiao@happylifeplat.com
  * @version 1.0
- * @date 2017/3/30 9:46
+ * @date 2017/4/1 10:57
  * @since JDK 1.8
  */
-public class GoodsEs implements Serializable{
+public class EntityResult implements Serializable {
 
-
-    private static final long serialVersionUID = -7936118358265107227L;
+    private static final long serialVersionUID = 5368316239844232306L;
 
     /**
      * 商品id
@@ -74,46 +74,7 @@ public class GoodsEs implements Serializable{
     /**
      * 供应商id
      */
-
     private String providerId;
-
-    /**
-     * 商品状态
-     */
-    private Integer status;
-
-
-    /**
-     * 是否删除
-     */
-    private Boolean disable;
-
-
-    /**
-     * 商品缩略图url
-     */
-    private String thumbnail;
-
-
-    /**
-     * 是否有定金
-     */
-    private Boolean hasDeposit;
-
-    /**
-     * 审核状态
-     */
-    private Integer verifyStatus;
-
-    /**
-     * 是否失效
-     */
-    private Boolean invalid;
-
-    /**
-     * 支付类型
-     */
-    private  Integer payType;
 
     public String getId() {
         return id;
@@ -179,62 +140,6 @@ public class GoodsEs implements Serializable{
         this.costPrice = costPrice;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Boolean getDisable() {
-        return disable;
-    }
-
-    public void setDisable(Boolean disable) {
-        this.disable = disable;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public Boolean getHasDeposit() {
-        return hasDeposit;
-    }
-
-    public void setHasDeposit(Boolean hasDeposit) {
-        this.hasDeposit = hasDeposit;
-    }
-
-    public Integer getVerifyStatus() {
-        return verifyStatus;
-    }
-
-    public void setVerifyStatus(Integer verifyStatus) {
-        this.verifyStatus = verifyStatus;
-    }
-
-    public Boolean getInvalid() {
-        return invalid;
-    }
-
-    public void setInvalid(Boolean invalid) {
-        this.invalid = invalid;
-    }
-
-    public Integer getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Integer payType) {
-        this.payType = payType;
-    }
-
     public String getGoodsTypeId() {
         return goodsTypeId;
     }
@@ -259,4 +164,8 @@ public class GoodsEs implements Serializable{
         this.providerId = providerId;
     }
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }

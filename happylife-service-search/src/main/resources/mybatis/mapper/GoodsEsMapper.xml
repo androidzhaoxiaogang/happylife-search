@@ -35,4 +35,11 @@
         AND   update_time  > #{updateTime ,jdbcType=VARCHAR}
     </select>
 
+
+    <select id="listPage" resultMap="ResultMap" parameterType="com.happylifeplat.service.search.query.GoodsPage">
+        SELECT    <include refid="Base_Column_List"/>
+        FROM goods WHERE  1= 1
+        AND   update_time  > #{updateTime ,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

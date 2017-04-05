@@ -2,6 +2,7 @@ package com.happylifeplat.facade.search.service;
 
 import com.happylifeplat.facade.search.entity.SearchRequest;
 import com.happylifeplat.facade.search.exception.SearchException;
+import com.happylifeplat.facade.search.result.SearchResult;
 
 /**
  * <p>Description: .</p>
@@ -19,9 +20,9 @@ public interface ElasticSearchService {
      * es 查询接口
      *
      * @param searchRequest 查询参数
-     * @return json格式字符串
+     * @return SearchResult 返回对象
      * @throws SearchException 异常信息
      */
-    String search(SearchRequest searchRequest) throws SearchException;
+    SearchResult search(SearchRequest searchRequest) throws SearchException;
 
 }

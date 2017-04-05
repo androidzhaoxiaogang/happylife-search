@@ -10,7 +10,7 @@ package com.happylifeplat.facade.search.enums;
  * @date 2017/3/30 14:55
  * @since JDK 1.8
  */
-public enum SortType {
+public enum SortTypeEnum {
 
     DISTANCE {//距离
         @Override

@@ -44,6 +44,19 @@ public class SearchEntity extends SearchRequest {
      */
     private Map<String, Object> fieldMap;
 
+    /**
+     * 子文档查询字段
+     */
+    private String childField;
+
+    public String getChildField() {
+        return childField;
+    }
+
+    public void setChildField(String childField) {
+        this.childField = childField;
+    }
+
     public String getField() {
         return field;
     }

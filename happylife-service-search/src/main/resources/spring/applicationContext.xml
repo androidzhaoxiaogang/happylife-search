@@ -9,7 +9,7 @@
         <constructor-arg value="${es.host}"/><!-- ip -->
         <constructor-arg value="${es.port}"/><!-- port -->
     </bean>
-    <bean id="jobInit" class="com.happylifeplat.service.search.init.JobInit" />
+    <bean id="jobInit" class="com.happylifeplat.service.search.bootstrap.JobBootstrap" />
 
     <!--数据源-->
     <import resource="spring-dataSource.xml"/>

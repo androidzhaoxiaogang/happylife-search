@@ -17,6 +17,12 @@
             <artifactId>happylife-facade-search</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <!-- mybatis 分页拦截器 -->
+        <dependency>
+            <groupId>com.happylifeplat</groupId>
+            <artifactId>mybatis-pager-plugin</artifactId>
+            <version>1.8-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
