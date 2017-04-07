@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * <p>Description: .</p>
@@ -42,8 +44,25 @@ public class ElasticSearchExecutorTest {
     @Test
     public void testEsClient(){
         GoodsEs goodsEs = new GoodsEs();
-        goodsEs.setId("ssasasasa");
-        ElasticSearchClient.bulkGoodsIndex("goods","goods", Collections.singletonList(goodsEs));
+        goodsEs.setId("899999999999");
+        goodsEs.setName("xiaoyu888");
+        List<GoodsEs> goodsEsList = new ArrayList<>();
+        goodsEsList.add(goodsEs);
+        goodsEs=new GoodsEs();
+        goodsEs.setId("77777");
+        goodsEs.setName("test2");
+        goodsEsList.add(goodsEs);
+        ElasticSearchClient.bulkGoodsIndex("goods","goods", goodsEsList);
+    }
+
+
+    @Test
+    public void testBulkDelete(){
+        List<String> ids = new ArrayList<>();
+        ids.add("899999999999");
+        ids.add("77777");
+        ids.add("ssasasasa");
+        ElasticSearchClient.bulkDelete("goods","goods",ids);
     }
 
 }
