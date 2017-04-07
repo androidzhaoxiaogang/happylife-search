@@ -64,7 +64,7 @@ public class JobScheduler {
         return this;
     }
 
-    public boolean isRunning(String jobKey) {
+    public synchronized boolean isRunning(String jobKey) {
         try {
             for (JobExecutionContext context : scheduler.getCurrentlyExecutingJobs()) {
                 // logger.info(context.getJobDetail().getKey().getName() + " is running");

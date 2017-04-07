@@ -1,6 +1,6 @@
 package com.happylifeplat.service.search.task;
 
-import com.google.common.reflect.Reflection;
+import com.happylifeplat.service.search.bootstrap.JobBootstrap;
 import com.happylifeplat.service.search.entity.JobInfo;
 import com.happylifeplat.service.search.executor.ElasticSearchExecutor;
 import org.quartz.Job;
@@ -9,6 +9,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -27,7 +29,6 @@ import java.lang.reflect.Method;
  */
 public class Task implements Job {
 
-
     /**
      * logger
      */
@@ -43,14 +44,16 @@ public class Task implements Job {
         }
         //获取配置的job处理对象，进行代理调用
         String handler = info.getHandler();
-        try {
+        final ElasticSearchExecutor elasticSearchExecutor = JobBootstrap.getExecutor(handler);
+        elasticSearchExecutor.execute(info);
+       /* try {
             Object bean = Class.forName(handler).newInstance();
             ElasticSearchExecutor elasticSearchExecutor =
                     Reflection.newProxy(ElasticSearchExecutor.class, new worker(bean));
             elasticSearchExecutor.execute(info);
         } catch (Exception e) {
             LOGGER.error("callback execute failure:classname  " +handler + "," + e.getMessage());
-        }
+        }*/
     }
 
 

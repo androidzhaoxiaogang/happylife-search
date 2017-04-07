@@ -1,5 +1,7 @@
 package com.happylifeplat.service.search.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.happylifeplat.facade.search.enums.OrderByEnum;
 import com.happylifeplat.service.search.entity.GoodsEs;
 import com.happylifeplat.service.search.entity.ProviderRegionEs;
@@ -13,23 +15,29 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.HasChildQueryBuilder;
-import org.elasticsearch.index.query.HasParentQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.hasChildQuery;
 import static org.elasticsearch.index.query.QueryBuilders.hasParentQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
 /**
  * <p>Description: .</p>
@@ -45,6 +53,11 @@ import static org.elasticsearch.index.query.QueryBuilders.hasParentQuery;
 public class ElasticSearchClient {
 
     private static TransportClient client;
+
+    /**
+     * jackson用于序列化操作的mapper
+     */
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final int DEFAULT_PORT = 9300;//elasticsearch 集群的主节点的默认是9300
     /**
@@ -62,10 +75,12 @@ public class ElasticSearchClient {
         //es集群的设置信息
         Settings settings = Settings.builder().put("client.transport.sniff", true)
                 .put("cluster.name", clusterName).build();
-           /* client = TransportClient.builder()
-                    .settings(settings)
-                    .build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ip), port));*/
+        try {
+            client = new PreBuiltTransportClient(settings)
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ip), port));
+        } catch (UnknownHostException e) {
+            LogUtil.error(LOGGER, "elasticsearch UnknownHostException 客户端连接失败：{}", e::getMessage);
+        }
         LogUtil.info(LOGGER, () -> "elasticsearch 客户端初始化成功！");
     }
 
@@ -80,8 +95,15 @@ public class ElasticSearchClient {
      */
     public static boolean bulkGoodsIndex(String index, String type, List<GoodsEs> list) {
         BulkRequestBuilder bulkRequest = client.prepareBulk();
-        list.forEach(goodsEs -> bulkRequest.add(
-                client.prepareIndex(index, type, goodsEs.getId()).setSource(goodsEs)));
+        list.forEach(goodsEs -> {
+            try {
+                final String goodsJson = objectMapper.writeValueAsString(goodsEs);
+                bulkRequest.add(
+                        client.prepareIndex(index, type, goodsEs.getId()).setSource(goodsJson, XContentType.JSON));
+            } catch (JsonProcessingException e) {
+                LogUtil.error(LOGGER, "商品对象json格式化异常:{}", e::getMessage);
+            }
+        });
         return !bulkRequest.get().hasFailures();
     }
 
@@ -113,10 +135,18 @@ public class ElasticSearchClient {
      */
     public static boolean bulkRegionIndex(String index, String type, List<ProviderRegionEs> list) {
         BulkRequestBuilder bulkRequest = client.prepareBulk();
-        list.forEach(providerRegionEs -> bulkRequest.add(
-                client.prepareIndex(index, type)
-                        .setParent(providerRegionEs.getGoodsId())
-                        .setSource(providerRegionEs)));
+        list.forEach(providerRegionEs ->{
+            try {
+                final String regionJson = objectMapper.writeValueAsString(providerRegionEs);
+                bulkRequest.add(
+                        client.prepareIndex(index, type)
+                                .setParent(providerRegionEs.getGoodsId())
+                                .setSource(regionJson,XContentType.JSON));
+            } catch (JsonProcessingException e) {
+                LogUtil.error(LOGGER, "商品对象json格式化异常:{}", e::getMessage);
+            }
+
+        });
         return !bulkRequest.get().hasFailures();
     }
 
@@ -140,7 +170,7 @@ public class ElasticSearchClient {
                 .multiMatchQuery(searchEntity.getKeywords(), searchEntity.getFields());
         final TermQueryBuilder childTermQuery =
                 QueryBuilders.termQuery(searchEntity.getChildField(), searchEntity.getRegionId());
-       // final HasParentQueryBuilder hasParentQueryBuilder = hasParentQuery(parentType, parentQb, Boolean.TRUE);
+        // final HasParentQueryBuilder hasParentQueryBuilder = hasParentQuery(parentType, parentQb, Boolean.TRUE);
 
 
         //final HasChildQueryBuilder hasChildQueryBuilder = hasChildQuery(childType, childTermQuery, ScoreMode.None);

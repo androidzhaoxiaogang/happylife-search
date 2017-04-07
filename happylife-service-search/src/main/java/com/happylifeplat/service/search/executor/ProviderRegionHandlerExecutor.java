@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.swing.plaf.synth.Region;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
  * @date 2017/3/30 9:40
  * @since JDK 1.8
  */
+@Component
 public class ProviderRegionHandlerExecutor implements ElasticSearchExecutor {
 
     /**
@@ -43,7 +45,7 @@ public class ProviderRegionHandlerExecutor implements ElasticSearchExecutor {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsHandlerExecutor.class);
 
-    @Autowired
+    @Autowired(required = false)
     private ProviderRegionEsMapper providerRegionEsMapper;
 
     @ApolloConfig
@@ -62,10 +64,12 @@ public class ProviderRegionHandlerExecutor implements ElasticSearchExecutor {
         final String createTime = SysProps.get(param);
         try {
             int currentPage = 1;
+            PageParameter pageParameter = new PageParameter();
+            pageParameter.setPageSize(regionPageSize);
+            RegionPage regionPage = new RegionPage();
+            regionPage.setCreateTime(createTime);
             while (true) {
-                PageParameter pageParameter = new PageParameter(currentPage, regionPageSize);
-                RegionPage regionPage = new RegionPage();
-                regionPage.setCreateTime(createTime);
+                pageParameter.setCurrentPage(currentPage);
                 regionPage.setPage(pageParameter);
                 List<ProviderRegionEs> providerRegionEs =
                         providerRegionEsMapper.listPage(regionPage);

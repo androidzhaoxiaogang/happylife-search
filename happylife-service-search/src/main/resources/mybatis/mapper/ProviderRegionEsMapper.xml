@@ -33,7 +33,7 @@
         r.leaf_number
         FROM service_provider_administrative_region r LEFT JOIN goods  g on g.provider_id=r.provider_id
         WHERE  1= 1 and g.is_disable=0 and g.is_invalid=0
-        AND   create_time  > #{createTime ,jdbcType=VARCHAR}
+        AND   r.create_time  > #{createTime ,jdbcType=VARCHAR}
     </select>
 
 </mapper>
