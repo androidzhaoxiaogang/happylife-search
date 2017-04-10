@@ -13,5 +13,25 @@ package com.happylifeplat.service.search.constant;
 
 public final class ConstantSearch {
 
-    public static final String DEFULT_LAST_TIME = "2015-01-01 0:00:00";
+    public static final String DEFAULT_LAST_TIME = "2015-01-01 0:00:00";
+
+    /**
+     * es 索引名称
+     */
+    public static final String INDEX = "goods";
+
+    /**
+     * 商品类型
+     */
+    public static final String GOODS_TYPE = "goods";
+
+    /**
+     * 区域类型
+     */
+    public static final String REGION_TYPE = "region";
+
+    /**
+     * 5000 大小的队列
+     */
+    public static final int MAX_QUEUE = 5000;
 }

@@ -1,6 +1,7 @@
 package com.happylifeplat.service.search.executor.handler;
 
 import com.google.common.reflect.Reflection;
+import com.happylifeplat.service.search.constant.ConstantSearch;
 import com.happylifeplat.service.search.entity.HandlerEntity;
 import com.happylifeplat.service.search.helper.Assert;
 import com.happylifeplat.service.search.helper.LogUtil;
@@ -35,17 +36,14 @@ public class ConcurrentHandler {
      */
     private static BlockingQueue<HandlerEntity> QUEUE;
 
-    /**
-     * 5000 大小的队列
-     */
-    private static final int MAX_QUEUE = 5000;
+
 
     /**
      * 初始化
      */
     public void init() {
         synchronized (LOGGER) {
-            QUEUE = new LinkedBlockingQueue<>(MAX_QUEUE);
+            QUEUE = new LinkedBlockingQueue<>(ConstantSearch.MAX_QUEUE);
             final ExecutorService executorService =
                     FixedThreadPoolHelper.getInstance().getExecutorService();
             final int MAX_THREAD = FixedThreadPoolHelper.getInstance().getDefaultThreadMax();

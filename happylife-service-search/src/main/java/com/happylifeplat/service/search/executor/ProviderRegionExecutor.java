@@ -136,7 +136,7 @@ public class ProviderRegionExecutor implements ElasticSearchExecutor {
         if (Objects.nonNull(byType)) {
             return DATE_FORMAT.format(byType.getLastTime());
         }
-        return ConstantSearch.DEFULT_LAST_TIME;
+        return ConstantSearch.DEFAULT_LAST_TIME;
     }
 
     private EsConfig getByType(int type) {

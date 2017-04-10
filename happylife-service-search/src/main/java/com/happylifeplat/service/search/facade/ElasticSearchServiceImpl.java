@@ -10,6 +10,7 @@ import com.happylifeplat.facade.search.enums.SortTypeEnum;
 import com.happylifeplat.facade.search.exception.SearchException;
 import com.happylifeplat.facade.search.service.ElasticSearchService;
 import com.happylifeplat.service.search.client.ElasticSearchClient;
+import com.happylifeplat.service.search.constant.ConstantSearch;
 import com.happylifeplat.service.search.helper.LogUtil;
 import com.happylifeplat.service.search.helper.RegionIdUtils;
 import com.happylifeplat.service.search.query.SearchEntity;
@@ -48,21 +49,6 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(ElasticSearchServiceImpl.class);
 
-    /**
-     * es 索引名称
-     */
-    private static final String INDEX = "goods";
-
-    /**
-     * 商品类型
-     */
-    private static final String GOODS_TYPE = "goods";
-
-    /**
-     * 区域类型
-     */
-    public static final String REGION_TYPE = "region";
-
 
     /**
      * es 查询接口
@@ -76,7 +62,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
         LogUtil.info(LOGGER, () -> "查询参数：searchRequest = [" + searchRequest.toString() + "]");
         SearchEntity searchEntity = buildSearchEntity(searchRequest);
         final SearchResponse searchResponse = ElasticSearchClient
-                .multiMatchQueryRelation(INDEX, GOODS_TYPE, REGION_TYPE, searchEntity);
+                .multiMatchQueryRelation(ConstantSearch.INDEX, ConstantSearch.GOODS_TYPE, ConstantSearch.REGION_TYPE, searchEntity);
         return buildResult(searchResponse);
     }
 
