@@ -11,7 +11,7 @@ package com.happylifeplat.facade.search.exception;
  * @date 2017/3/24 15:15
  * @since JDK 1.8
  */
-public class SearchException extends Exception {
+public class SearchException extends RuntimeException {
 
     public SearchException() {
         super();
@@ -32,10 +32,6 @@ public class SearchException extends Exception {
     }
 
 
-    protected SearchException(String message, Throwable cause,
-                              boolean enableSuppression,
-                              boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+
 }
 

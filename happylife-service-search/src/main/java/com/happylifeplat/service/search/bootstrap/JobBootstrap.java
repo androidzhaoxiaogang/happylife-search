@@ -1,13 +1,15 @@
 package com.happylifeplat.service.search.bootstrap;
 
 import com.happylifeplat.service.search.client.ElasticSearchClient;
+import com.happylifeplat.service.search.executor.handler.ConcurrentHandler;
 import com.happylifeplat.service.search.entity.JobInfo;
-import com.happylifeplat.service.search.executor.ElasticSearchExecutor;
+import com.happylifeplat.service.search.helper.SpringBeanUtils;
 import com.happylifeplat.service.search.quartz.JobScheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class JobBootstrap implements ApplicationContextAware {
     /**
      * Spring应用上下文环境
      */
-    private static ApplicationContext applicationContext;
+    private  ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -35,15 +37,11 @@ public class JobBootstrap implements ApplicationContextAware {
         start();
     }
 
-    public static ElasticSearchExecutor getExecutor(String beanName) {
-        return (ElasticSearchExecutor)
-                applicationContext.getBean(beanName);
-    }
-
     /**
      * 开始执行
      */
     private void start() {
+        init();
         JobScheduler jobScheduler = JobScheduler.getInstance();
         List<JobInfo> jobInfoList = (List<JobInfo>) applicationContext.getBean("jobs");
         try {
@@ -53,5 +51,11 @@ public class JobBootstrap implements ApplicationContextAware {
             JobScheduler.getInstance().shutdown();
             System.exit(1);
         }
+    }
+
+    private void init(){
+        SpringBeanUtils.getInstance().setCfgContext((ConfigurableApplicationContext)applicationContext);
+        final ConcurrentHandler concurrentHandler = SpringBeanUtils.getInstance().getBean(ConcurrentHandler.class);
+        concurrentHandler.init();
     }
 }

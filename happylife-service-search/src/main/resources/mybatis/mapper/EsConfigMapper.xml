@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.happylifeplat.service.search.mapper.EsConfigMapper" >
+    <resultMap id="ResultMap" type="com.happylifeplat.service.search.entity.EsConfig">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="last_time" property="lastTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="getByType" resultMap="ResultMap" parameterType="java.lang.Integer">
+         SELECT ID , TYPE ,LAST_TIME
+         FROM ES_CONFIG
+         WHERE  type= #{type}
+    </select>
+
+    <insert id="save" parameterType="com.happylifeplat.service.search.entity.EsConfig" >
+        INSERT INTO ES_CONFIG (ID , TYPE ,LAST_TIME )
+        VALUES (#{id,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},
+        #{lastTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="update" parameterType="com.happylifeplat.service.search.entity.EsConfig">
+        update ES_CONFIG set  LAST_TIME   = #{lastTime,jdbcType=TIMESTAMP}
+        where ID= #{id,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

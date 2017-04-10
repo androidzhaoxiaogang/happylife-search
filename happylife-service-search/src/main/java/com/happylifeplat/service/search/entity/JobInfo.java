@@ -40,8 +40,15 @@ public class JobInfo {
     /**
      * job 处理对象
      */
-    private String handler;
+    private String executor;
 
+    public String getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(String executor) {
+        this.executor = executor;
+    }
 
     public String getName() {
         return name;
@@ -74,13 +81,6 @@ public class JobInfo {
     public void setCron(String cron) {
         this.cron = cron;
     }
-    public String getHandler() {
-        return handler;
-    }
-
-    public void setHandler(String handler) {
-        this.handler = handler;
-    }
 
 
     public String getParam() {
@@ -99,7 +99,7 @@ public class JobInfo {
                 ", type='" + type + '\'' +
                 ", cron='" + cron + '\'' +
                 ", param='" + param + '\'' +
-                ", handler=" + handler +
+                ", executor=" + executor +
                 '}';
     }
 }

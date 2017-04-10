@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
@@ -60,7 +61,8 @@ public class SysProps {
 
     public static void update(String key, String value) {
         try {
-            OutputStream fos = new FileOutputStream(path);
+            final String path = SysProps.class.getClassLoader().getResource(SysProps.path).getPath();
+            FileOutputStream fos = new FileOutputStream(path);
             props.setProperty(key, value);
             props.store(fos, "last job finish at");
             fos.close();
@@ -72,9 +74,14 @@ public class SysProps {
     public static void main(String[] args) {
         String time = SysProps.get("goods.lastTime");
         System.out.println(time);
-        String str=LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
+        String str = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
         SysProps.update("goods.lastTime", str);
-        time=SysProps.get("goods.lastTime");
+        time = SysProps.get("goods.lastTime");
         System.out.println(time);
+        SysProps.update("my.lastTime", str);
+
+        SysProps.update("xiaoyu", "199195");
+
+
     }
 }

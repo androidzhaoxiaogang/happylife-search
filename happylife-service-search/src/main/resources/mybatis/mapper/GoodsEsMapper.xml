@@ -19,7 +19,7 @@
         <result column="verify_status" property="verifyStatus" jdbcType="INTEGER"/>
         <result column="has_deposit" property="hasDeposit" jdbcType="TINYINT"/>
         <result column="is_invalid" property="invalid" jdbcType="TINYINT"/>
-        <result column="pay_type" property="payType" jdbcType="TIMESTAMP"/>
+        <result column="pay_type" property="payType" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">

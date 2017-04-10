@@ -4,14 +4,23 @@ import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfig;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
+import com.happylifeplat.facade.search.enums.EsConfigTypeEnum;
 import com.happylifeplat.plugin.mybatis.pager.PageParameter;
 import com.happylifeplat.service.search.client.ElasticSearchClient;
+import com.happylifeplat.service.search.constant.ConstantSearch;
+import com.happylifeplat.service.search.entity.EsConfig;
+import com.happylifeplat.service.search.entity.GoodsEs;
+import com.happylifeplat.service.search.entity.HandlerEntity;
 import com.happylifeplat.service.search.entity.JobInfo;
 import com.happylifeplat.service.search.entity.ProviderRegionEs;
+import com.happylifeplat.service.search.executor.handler.ConcurrentHandler;
+import com.happylifeplat.service.search.executor.handler.GoodsHandler;
+import com.happylifeplat.service.search.executor.handler.RegionHandler;
 import com.happylifeplat.service.search.helper.LogUtil;
+import com.happylifeplat.service.search.helper.SpringBeanUtils;
 import com.happylifeplat.service.search.helper.SysProps;
+import com.happylifeplat.service.search.mapper.EsConfigMapper;
 import com.happylifeplat.service.search.mapper.ProviderRegionEsMapper;
-import com.happylifeplat.service.search.query.GoodsPage;
 import com.happylifeplat.service.search.query.RegionPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +29,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.swing.plaf.synth.Region;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -38,15 +50,21 @@ import java.util.stream.Collectors;
  * @since JDK 1.8
  */
 @Component
-public class ProviderRegionHandlerExecutor implements ElasticSearchExecutor {
+public class ProviderRegionExecutor implements ElasticSearchExecutor {
 
     /**
      * logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsHandlerExecutor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsExecutor.class);
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 
     @Autowired(required = false)
     private ProviderRegionEsMapper providerRegionEsMapper;
+
+    @Autowired(required = false)
+    private EsConfigMapper esConfigMapper;
 
     @ApolloConfig
     private Config config;
@@ -54,14 +72,16 @@ public class ProviderRegionHandlerExecutor implements ElasticSearchExecutor {
     @Value("${region.pageSize:1000}")
     private int regionPageSize;
 
+    @Autowired
+    private ConcurrentHandler concurrentHandler;
+
     @Override
     public void execute(JobInfo jobInfo) {
         LogUtil.debug(LOGGER, () -> " 开始执行创建服务区域索引："
                 + "jobInfo = [" + jobInfo.toString() + "]");
         final String index = jobInfo.getIndex();
         final String type = jobInfo.getType();
-        final String param = jobInfo.getParam();
-        final String createTime = SysProps.get(param);
+        final String createTime = getLastTime();
         try {
             int currentPage = 1;
             PageParameter pageParameter = new PageParameter();
@@ -73,37 +93,55 @@ public class ProviderRegionHandlerExecutor implements ElasticSearchExecutor {
                 regionPage.setPage(pageParameter);
                 List<ProviderRegionEs> providerRegionEs =
                         providerRegionEsMapper.listPage(regionPage);
-                if (!CollectionUtils.isEmpty(providerRegionEs)) {
-                    /**
-                     * 由于 region表无删除标志 ，无id ，每次都是更新都是删除，再新增 所以
-                     * 需要先根据供应商id 删除索引，再新建
-                     */
-                    final List<String> providerIds = providerRegionEs.parallelStream()
-                            .map(ProviderRegionEs::getProviderId)
-                            .distinct().collect(Collectors.toList());
-                    //先根据供应商id 删除索引
-                    ElasticSearchClient.bulkDeleteRegion(index, providerIds);
-                    final boolean success = ElasticSearchClient
-                            .bulkRegionIndex(index, type, providerRegionEs);
-                    if (success) {
-                        LogUtil.debug(LOGGER, () -> "服务区域建立索引成功！");
-                    }
-                    pageParameter = regionPage.getPage();
-                    final int totalPage = pageParameter.getTotalPage();
-                    if (totalPage == currentPage) {
-                        break;
-                    }
-                    currentPage++;
+                if (CollectionUtils.isEmpty(providerRegionEs)) {
+                    return;
                 }
+
+                /**
+                 * 封装成handlerEntity 异步提交
+                 */
+                CompletableFuture.supplyAsync(() -> {
+                    HandlerEntity<ProviderRegionEs> handlerEntity = new HandlerEntity<>();
+                    handlerEntity.setType(EsConfigTypeEnum.REGION.getCode());
+                    handlerEntity.setHandler(RegionHandler.class);
+                    handlerEntity.setIndex(index);
+                    handlerEntity.setIndexType(type);
+                    handlerEntity.setData(providerRegionEs);
+                    return handlerEntity;
+                }).thenAccept(concurrentHandler::submit);
+                pageParameter = regionPage.getPage();
+                final int totalPage = pageParameter.getTotalPage();
+                if (totalPage == currentPage) {
+                    break;
+                }
+                currentPage++;
             }
-            SysProps.update(param,
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")));
+            updateLastTime();
         } catch (Exception e) {
             LogUtil.error(LOGGER, "服务区域建立索引失败：{},", e::getMessage);
         }
 
     }
 
+
+    private void updateLastTime() {
+        final EsConfig byType = getByType(EsConfigTypeEnum.REGION.getCode());
+        byType.setLastTime(new Date());
+        esConfigMapper.update(byType);
+
+    }
+
+    private String getLastTime() {
+        final EsConfig byType = getByType(EsConfigTypeEnum.REGION.getCode());
+        if (Objects.nonNull(byType)) {
+            return DATE_FORMAT.format(byType.getLastTime());
+        }
+        return ConstantSearch.DEFULT_LAST_TIME;
+    }
+
+    private EsConfig getByType(int type) {
+        return esConfigMapper.getByType(type);
+    }
 
     @ApolloConfigChangeListener("application")
     private void pageSizeChangeHandler(ConfigChangeEvent changeEvent) {

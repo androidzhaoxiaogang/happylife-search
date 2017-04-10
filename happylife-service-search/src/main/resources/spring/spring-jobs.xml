@@ -14,16 +14,14 @@
               p:index="goods"
               p:type="goods"
               p:cron="* 1/5 * * * ? "
-              p:param="goods.lastTime"
-              p:handler="goodsHandlerExecutor"
+              p:executor="goodsExecutor"
         />
         <bean class="com.happylifeplat.service.search.entity.JobInfo"
               p:name="regionJob"
               p:index="goods"
               p:type="region"
               p:cron="* 3/10 * * * ? "
-              p:param="region.lastTime"
-              p:handler="providerRegionHandlerExecutor"
+              p:executor="providerRegionExecutor"
         />
     </util:list>
 </beans>

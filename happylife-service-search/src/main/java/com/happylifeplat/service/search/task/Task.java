@@ -3,6 +3,7 @@ package com.happylifeplat.service.search.task;
 import com.happylifeplat.service.search.bootstrap.JobBootstrap;
 import com.happylifeplat.service.search.entity.JobInfo;
 import com.happylifeplat.service.search.executor.ElasticSearchExecutor;
+import com.happylifeplat.service.search.helper.SpringBeanUtils;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -43,8 +44,9 @@ public class Task implements Job {
             return;
         }
         //获取配置的job处理对象，进行代理调用
-        String handler = info.getHandler();
-        final ElasticSearchExecutor elasticSearchExecutor = JobBootstrap.getExecutor(handler);
+        String executor = info.getExecutor();
+        final ElasticSearchExecutor elasticSearchExecutor =(ElasticSearchExecutor)SpringBeanUtils
+                .getInstance().getBeanByName(executor);
         elasticSearchExecutor.execute(info);
        /* try {
             Object bean = Class.forName(handler).newInstance();
