@@ -75,6 +75,8 @@ public class ProviderRegionExecutor implements ElasticSearchExecutor {
     @Autowired
     private ConcurrentHandler concurrentHandler;
 
+    private static  volatile  boolean IS_FULL=true;
+
     @Override
     public void execute(JobInfo jobInfo) {
         LogUtil.debug(LOGGER, () -> " 开始执行创建服务区域索引："
@@ -83,7 +85,28 @@ public class ProviderRegionExecutor implements ElasticSearchExecutor {
         final String type = jobInfo.getType();
         final String createTime = getLastTime();
         try {
-            int currentPage = 1;
+            //区域不能用分页查询
+            final List<ProviderRegionEs> providerRegionEsList =
+                    providerRegionEsMapper.listByCreateTime(createTime);
+            if (CollectionUtils.isEmpty(providerRegionEsList)) {
+                updateLastTime();
+                return;
+            }
+            LogUtil.info(LOGGER,"当前区域数据数量为：{}条",providerRegionEsList.size());
+            /**
+             * 封装成handlerEntity 异步提交
+             */
+            CompletableFuture.supplyAsync(() -> {
+                HandlerEntity<ProviderRegionEs> handlerEntity = new HandlerEntity<>();
+                handlerEntity.setType(EsConfigTypeEnum.REGION.getCode());
+                handlerEntity.setHandler(RegionHandler.class);
+                handlerEntity.setIndex(index);
+                handlerEntity.setIndexType(type);
+                handlerEntity.setData(providerRegionEsList);
+                return handlerEntity;
+            }).thenAccept(concurrentHandler::submit);
+            updateLastTime();
+          /*  int currentPage = 1;
             PageParameter pageParameter = new PageParameter();
             pageParameter.setPageSize(regionPageSize);
             RegionPage regionPage = new RegionPage();
@@ -97,9 +120,9 @@ public class ProviderRegionExecutor implements ElasticSearchExecutor {
                     return;
                 }
 
-                /**
+                *//**
                  * 封装成handlerEntity 异步提交
-                 */
+                 *//*
                 CompletableFuture.supplyAsync(() -> {
                     HandlerEntity<ProviderRegionEs> handlerEntity = new HandlerEntity<>();
                     handlerEntity.setType(EsConfigTypeEnum.REGION.getCode());
@@ -115,8 +138,8 @@ public class ProviderRegionExecutor implements ElasticSearchExecutor {
                     break;
                 }
                 currentPage++;
-            }
-            updateLastTime();
+            }*/
+
         } catch (Exception e) {
             LogUtil.error(LOGGER, "服务区域建立索引失败：{},", e::getMessage);
         }

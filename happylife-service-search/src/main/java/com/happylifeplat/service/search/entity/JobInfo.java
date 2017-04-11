@@ -11,6 +11,8 @@ package com.happylifeplat.service.search.entity;
  * @since JDK 1.8
  */
 public class JobInfo {
+
+
     /**
      * job名称
      */

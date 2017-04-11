@@ -84,8 +84,9 @@ public class GoodsExecutor implements ElasticSearchExecutor {
             goodsPage.setPage(pageParameter);
             final List<GoodsEs> goodsEsList = goodsEsMapper.listPage(goodsPage);
             if (CollectionUtils.isEmpty(goodsEsList)) {
-                return;
+                break;
             }
+            LogUtil.info(LOGGER,"当前处理页数为：{}",currentPage);
             /**
              * 封装成handlerEntity 异步提交
              */

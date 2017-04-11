@@ -29,5 +29,5 @@ CREATE TABLE `es_config` (
 -- ----------------------------
 -- Records of es_config
 -- ----------------------------
-INSERT INTO `es_config` VALUES ('a81994b3-4553-4c3e-ade8-ce8a24989aa4', '0', '2017-04-08 14:16:17');
-INSERT INTO `es_config` VALUES ('a81994b3-4553-4c3e-ade8-ce8a24989aa5', '1', '2017-04-07 15:19:19');
+INSERT INTO `es_config` VALUES ('a81994b3-4553-4c3e-ade8-ce8a24989aa4', '0', '2015-01-01 00:00:00');
+INSERT INTO `es_config` VALUES ('a81994b3-4553-4c3e-ade8-ce8a24989aa5', '1', '2015-01-01 00:00:00');

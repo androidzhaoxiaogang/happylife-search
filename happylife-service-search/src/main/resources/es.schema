@@ -1,60 +1,54 @@
 # 商品和服务区域的index和type mapping
 
+#建立父子关联关系
 PUT goods
 {
-  "mappings":{
-  "goods":{},
-  "region":{
-  "_parent":{
-  "type":"goods"
-  }
-  }
-  },
-
-  "settings": {
-    "analysis": {
-      "analyzer": {
-        "ik_pinyin_analyzer": {
-          "type":      "custom",
-          "tokenizer": "ik_smart",
-          "char_filter": [
-            "html_strip"
-          ],
-          "filter": [
-            "my_pinyin",
-            "word_delimiter"
-          ]
+    "mappings": {
+        "goods": {
+            "properties": {
+                "name": {
+                    "type": "text",
+                    "analyzer": "ik_max_word",
+                    "search_analyzer": "ik_max_word",
+                    "include_in_all": "true",
+                    "boost": 8
+                }
+            }
+        },
+        "region": {
+            "_parent": {
+                "type": "goods"
+            },
+            "properties": {
+                "administrative_region_id": {
+                    "type": "text",
+                    "analyzer": "ik_max_word",
+                    "search_analyzer": "ik_max_word",
+                    "include_in_all": "true",
+                    "boost": 8
+                }
+            }
         }
-      },
-      "filter": {
-      	"my_pinyin": {
-      		"type": "pinyin",
-      		"first_letter": "prefix",
-      		"padding_char": " "
-      	}
-      }
     }
-  }
 }
-# 店铺索引
-PUT goods/_mapping/goods
+# 商品分词
+PUT goods/goods/_mapping
 {
-  "properties": {
-    "code": {
-      "type": "string",
-      "index": "no"
-    },
-    "name": {
-      "type": "keyword",
-      "fields": {
-        "pinyin": {
-          "type": "text",
-          "store": "no",
-          "term_vector": "with_positions_offsets",
-          "analyzer": "ik_pinyin_analyzer",
-          "boost": 10
+    "goods": {
+        "_all": {
+            "analyzer": "ik_max_word",
+            "search_analyzer": "ik_max_word",
+            "term_vector": "no",
+            "store": "false"
+        },
+        "properties": {
+            "name": {
+                "type": "text",
+                "analyzer": "ik_max_word",
+                "search_analyzer": "ik_max_word",
+                "include_in_all": "true",
+                "boost": 8
+            }
         }
-      }
     }
-  }
 }

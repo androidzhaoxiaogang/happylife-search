@@ -20,7 +20,7 @@
               p:name="regionJob"
               p:index="goods"
               p:type="region"
-              p:cron="* 3/10 * * * ? "
+              p:cron="* 3/5 * * * ? "
               p:executor="providerRegionExecutor"
         />
     </util:list>
