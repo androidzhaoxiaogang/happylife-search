@@ -32,6 +32,7 @@ public class RegionHandler implements  ElasticSearchHandler<ProviderRegionEs> {
 
     @Override
     public void action(HandlerEntity<ProviderRegionEs> handlerEntity) {
+
         if (Objects.nonNull(handlerEntity)) {
             if (Objects.equals(handlerEntity.getType(), EsConfigTypeEnum.REGION.getCode())) {
                 final List<ProviderRegionEs> providerRegionEsList = handlerEntity.getData();

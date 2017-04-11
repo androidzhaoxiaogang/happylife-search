@@ -59,6 +59,9 @@ public class GoodsExecutor implements ElasticSearchExecutor {
     @Autowired(required = false)
     private EsConfigMapper esConfigMapper;
 
+    @Autowired
+    private ConcurrentHandler concurrentHandler;
+
     @ApolloConfig
     private Config config;
 
@@ -76,8 +79,6 @@ public class GoodsExecutor implements ElasticSearchExecutor {
         pageParameter.setPageSize(goodsPageSize);
         GoodsPage goodsPage = new GoodsPage();
         goodsPage.setUpdateTime(updateTime);
-        final ConcurrentHandler concurrentHandler =
-                SpringBeanUtils.getInstance().getBean(ConcurrentHandler.class);
         while (true) {
             pageParameter.setCurrentPage(currentPage);
             goodsPage.setPage(pageParameter);

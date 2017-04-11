@@ -46,6 +46,12 @@ public class LogUtil {
         }
     }
 
+    public static  void  debug(Logger logger,String format,Object...var){
+        if(logger.isDebugEnabled()){
+            logger.debug(format,var);
+        }
+    }
+
 
     public static void info(Logger logger,String format,Supplier<Object> supplier){
         if(logger.isInfoEnabled()){
@@ -57,6 +63,12 @@ public class LogUtil {
     public static void info(Logger logger,Supplier<Object> supplier){
         if(logger.isInfoEnabled()){
             logger.info(Objects.toString(supplier.get()));
+        }
+    }
+
+    public static  void  info(Logger logger,String format,Object...var){
+        if(logger.isInfoEnabled()){
+            logger.debug(format,var);
         }
     }
 
@@ -72,6 +84,12 @@ public class LogUtil {
         }
     }
 
+    public static  void  error(Logger logger,String format,Object...var){
+        if(logger.isErrorEnabled()){
+            logger.debug(format,var);
+        }
+    }
+
     public static void warn(Logger logger,String format,Supplier<Object> supplier){
         if(logger.isWarnEnabled()){
             logger.warn(format,supplier.get());
@@ -81,6 +99,12 @@ public class LogUtil {
     public static void warn(Logger logger,Supplier<Object> supplier){
         if(logger.isWarnEnabled()){
             logger.warn(Objects.toString(supplier.get()));
+        }
+    }
+
+    public static  void  warn(Logger logger,String format,Object...var){
+        if(logger.isWarnEnabled()){
+            logger.debug(format,var);
         }
     }
 

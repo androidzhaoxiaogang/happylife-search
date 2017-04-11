@@ -36,8 +36,6 @@ public class ConcurrentHandler {
      */
     private static BlockingQueue<HandlerEntity> QUEUE;
 
-
-
     /**
      * 初始化
      */
