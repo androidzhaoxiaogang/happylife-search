@@ -1,5 +1,11 @@
 package com.happylifeplat.facade.search.enums;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+
 /**
  * <p>Description: .</p>
  * <p>Company: 深圳市旺生活互联网科技有限公司</p>
@@ -21,15 +27,44 @@ public enum ResultCodeEnum {
     /**
      * Fail result code enum.
      */
-    FAIL(-1,"查询失败，发生了异常")
+    FAIL(-1,"查询失败，发生了异常"),
 
 
+    REGION_IS_NOT_NULL(1188501,"行政区id不能为空"),
+
+    KEY_WORD_IS_NOT_NULL(1188502,"查询关键字不能为空"),
 
     ;
 
     ResultCodeEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+
+    /**
+     * 根据value 获取枚举对象
+     *  add by xiaoyu
+     * @param value 枚举值
+     * @return BackgroundCode enum
+     */
+    public static ResultCodeEnum getEnum(final Integer value) {
+        Optional<ResultCodeEnum> backgroundCode =
+                Arrays.stream(ResultCodeEnum.values())
+                        .filter(v -> Objects.equals(v.getCode(), value))
+                        .findFirst();
+        return backgroundCode.orElse(ResultCodeEnum.SUCCEED);
+    }
+
+
+    /**
+     * 根据value 获取 desc
+     *
+     * @param value value
+     * @return desc string
+     */
+    public static String getMessageByCode(final Integer value) {
+        return getEnum(value).getMessage();
     }
 
     /**

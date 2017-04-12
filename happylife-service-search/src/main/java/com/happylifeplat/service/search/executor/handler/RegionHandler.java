@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * @date 2017/4/10 10:15
  * @since JDK 1.8
  */
+@Deprecated
 public class RegionHandler implements  ElasticSearchHandler<ProviderRegionEs> {
 
     /**

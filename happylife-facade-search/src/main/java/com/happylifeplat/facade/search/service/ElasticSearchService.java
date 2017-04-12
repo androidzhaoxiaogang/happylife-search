@@ -25,4 +25,11 @@ public interface ElasticSearchService {
      */
     SearchResult search(SearchRequest searchRequest) throws SearchException;
 
+
+    /**
+     * 供应商更改区域 触发事件，会rebuild es索引，请异步调用
+     * @param providerId 供应商id
+     */
+    void fireRegionChangeEvent(String providerId);
+
 }

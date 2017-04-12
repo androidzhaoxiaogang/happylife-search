@@ -16,12 +16,5 @@
               p:cron="* 1/5 * * * ? "
               p:executor="goodsExecutor"
         />
-        <bean class="com.happylifeplat.service.search.entity.JobInfo"
-              p:name="regionJob"
-              p:index="goods"
-              p:type="region"
-              p:cron="* 3/5 * * * ? "
-              p:executor="providerRegionExecutor"
-        />
     </util:list>
 </beans>

@@ -37,7 +37,12 @@
             </list>
         </property>
     </bean>
-
+    <!--注册验证器 -->
+    <bean id="validator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+        <!--<property name="validationProperties" ref="loadProperties"/> -->
+    </bean>
     <!--数据源-->
     <import resource="classpath:spring/spring-dataSource-test.xml"/>
 </beans>

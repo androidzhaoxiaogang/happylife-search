@@ -140,7 +140,7 @@ public class ElasticSearchClient {
                 final String regionJson = objectMapper.writeValueAsString(providerRegionEs);
                 bulkRequest.add(
                         client.prepareIndex(index, type)
-                                .setParent(providerRegionEs.getGoodsId())
+                                .setParent("")
                                 .setSource(regionJson,XContentType.JSON));
             } catch (JsonProcessingException e) {
                 LogUtil.error(LOGGER, "商品对象json格式化异常:{}", e::getMessage);
@@ -248,7 +248,7 @@ public class ElasticSearchClient {
 
         BoolQueryBuilder bqb = boolQuery();
 
-        fieldMap.forEach((key, value) -> bqb.should(matchQuery(key, value)));
+        fieldMap.forEach((key, value) -> bqb.must(matchQuery(key, value)));
 
         SearchResponse response = client.prepareSearch(index)
                 .setTypes(type)

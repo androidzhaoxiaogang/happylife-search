@@ -1,7 +1,10 @@
 package com.happylifeplat.facade.search.entity;
 
 
+import com.happylifeplat.facade.search.exception.SearchErrorCode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 
@@ -21,11 +24,13 @@ public class SearchRequest implements Serializable {
     /**
      * 查询关键字
      */
+    @NotBlank(message = "#" + SearchErrorCode.KEY_WORD_IS_NOT_NULL)
     private String keywords= StringUtils.EMPTY;
 
     /**
      * 行政区id
      */
+    @NotBlank(message = "#" + SearchErrorCode.REGION_IS_NOT_NULL)
     private String regionId;
 
     /**
@@ -39,12 +44,12 @@ public class SearchRequest implements Serializable {
     private Integer size = 20;
 
     /**
-     * 排序类型
+     * 排序类型 {@linkplain com.happylifeplat.facade.search.enums.SortTypeEnum}
      */
     private String sortType;
 
     /**
-     * asc-升序，desc-降序
+     * asc-升序，desc-降序  {@linkplain com.happylifeplat.facade.search.enums.OrderByEnum}
      */
     private String sort;
 
@@ -108,4 +113,8 @@ public class SearchRequest implements Serializable {
     public void setFilterCondition(FilterCondition filterCondition) {
         this.filterCondition = filterCondition;
     }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);}
 }

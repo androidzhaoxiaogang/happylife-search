@@ -33,6 +33,19 @@ public class GoodsPage implements Serializable {
      */
     private String updateTime;
 
+    /**
+     * 供应商id
+     */
+    private String providerId;
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
+    }
+
     public String getUpdateTime() {
         return updateTime;
     }

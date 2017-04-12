@@ -3,12 +3,19 @@
 <mapper namespace="com.happylifeplat.service.search.mapper.ProviderRegionEsMapper" >
     <resultMap id="ResultMap" type="com.happylifeplat.service.search.entity.ProviderRegionEs">
         <result column="provider_id" property="providerId" jdbcType="VARCHAR"/>
-        <result column="administrative_region_id" property="administrativeRegionId" jdbcType="VARCHAR"/>
+        <result column="region_id" property="regionId" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
-        <result column="leaf_checked_number" property="leafCheckedNumber" jdbcType="INTEGER"/>
-        <result column="leaf_number" property="leafNumber" jdbcType="INTEGER"/>
-        <result column="goods_id" property="goodsId" jdbcType="VARCHAR"/>
     </resultMap>
+    
+    <select id="listByProviderId" resultMap="ResultMap" parameterType="java.lang.String">
+
+      SELECT  provider_id ,administrative_region_id AS region_id , status
+
+       FROM service_provider_administrative_region
+
+       WHERE  1= 1 and  status != 2  AND  provider_id  =#{providerId ,jdbcType=VARCHAR}
+
+    </select>
 
     <select id="listByCreateTime" resultMap="ResultMap" parameterType="java.lang.String">
         SELECT
@@ -19,7 +26,7 @@
          r.leaf_checked_number,
          r.leaf_number
          FROM service_provider_administrative_region r LEFT JOIN goods  g on g.provider_id=r.provider_id
-         WHERE  1= 1 and g.is_disable=0 and g.is_invalid=0
+         WHERE  1= 1 and r.status != 2 and  g.is_disable=0 and g.is_invalid=0
          AND   r.create_time  > #{createTime ,jdbcType=VARCHAR}
     </select>
 
@@ -32,7 +39,7 @@
         r.leaf_checked_number,
         r.leaf_number
         FROM service_provider_administrative_region r LEFT JOIN goods  g on g.provider_id=r.provider_id
-        WHERE  1= 1 and g.is_disable=0 and g.is_invalid=0
+        WHERE  1= 1 and r.status != 2 and g.is_disable=0 and g.is_invalid=0
         AND   r.create_time  > #{createTime ,jdbcType=VARCHAR}
     </select>
 

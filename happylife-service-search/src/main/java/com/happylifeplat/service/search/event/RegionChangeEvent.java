@@ -1,4 +1,4 @@
-package com.happylifeplat.service.search.executor;
+package com.happylifeplat.service.search.event;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
@@ -7,15 +7,13 @@ import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
 import com.happylifeplat.facade.search.enums.EsConfigTypeEnum;
 import com.happylifeplat.plugin.mybatis.pager.PageParameter;
 import com.happylifeplat.service.search.constant.ConstantSearch;
-import com.happylifeplat.service.search.entity.EsConfig;
 import com.happylifeplat.service.search.entity.GoodsEs;
 import com.happylifeplat.service.search.entity.HandlerEntity;
-import com.happylifeplat.service.search.entity.JobInfo;
 import com.happylifeplat.service.search.entity.ProviderRegionEs;
+import com.happylifeplat.service.search.event.bean.ChangeEvent;
 import com.happylifeplat.service.search.executor.handler.ConcurrentHandler;
 import com.happylifeplat.service.search.executor.handler.GoodsHandler;
 import com.happylifeplat.service.search.helper.LogUtil;
-import com.happylifeplat.service.search.mapper.EsConfigMapper;
 import com.happylifeplat.service.search.mapper.GoodsEsMapper;
 import com.happylifeplat.service.search.mapper.ProviderRegionEsMapper;
 import com.happylifeplat.service.search.query.GoodsPage;
@@ -26,46 +24,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-
 /**
  * <p>Description: .</p>
  * <p>Company: 深圳市旺生活互联网科技有限公司</p>
  * <p>Copyright: 2015-2017 happylifeplat.com All Rights Reserved</p>
- * 商品处理
- *
+ *  供应商区域更改处理
  * @author yu.xiao@happylifeplat.com
  * @version 1.0
- * @date 2017/3/29 18:15
+ * @date 2017/4/12 10:15
  * @since JDK 1.8
  */
 @Component
-public class GoodsExecutor implements ElasticSearchExecutor {
+public class RegionChangeEvent implements  CommonChangeEvent{
 
-    /**
-     * logger
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsExecutor.class);
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    /** logger */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegionChangeEvent.class);
 
     @Autowired(required = false)
     private GoodsEsMapper goodsEsMapper;
 
-    @Autowired(required = false)
-    private ProviderRegionEsMapper providerRegionEsMapper;
-
-    @Autowired(required = false)
-    private EsConfigMapper esConfigMapper;
 
     @Autowired
     private ConcurrentHandler concurrentHandler;
+
+    @Autowired(required = false)
+    private ProviderRegionEsMapper providerRegionEsMapper;
 
     @ApolloConfig
     private Config config;
@@ -73,22 +62,24 @@ public class GoodsExecutor implements ElasticSearchExecutor {
     @Value("${goods.pageSize}")
     private int goodsPageSize;
 
-
+    /**
+     * 触发更改事件接口
+     *
+     * @param changeEvent 事件实体类
+     */
     @Override
-    public void execute(JobInfo jobInfo) {
-        LogUtil.info(LOGGER, () -> "开始建立商品索引,jobInfo = [" + jobInfo.toString() + "]");
-        final String index = jobInfo.getIndex();
-        final String type = jobInfo.getType();
-        final String updateTime = getLastTime();
+    public void fireChangeEvent(ChangeEvent changeEvent) {
+        LogUtil.info(LOGGER, " " + "changeEvent = [" + changeEvent + "]");
+        final String providerId = (String) changeEvent.getData();
         int currentPage = 1;
         PageParameter pageParameter = new PageParameter();
         pageParameter.setPageSize(goodsPageSize);
         GoodsPage goodsPage = new GoodsPage();
-        goodsPage.setUpdateTime(updateTime);
+        goodsPage.setProviderId(providerId);
         while (true) {
             pageParameter.setCurrentPage(currentPage);
             goodsPage.setPage(pageParameter);
-            final List<GoodsEs> goodsEsList = goodsEsMapper.listPage(goodsPage);
+            final List<GoodsEs> goodsEsList = goodsEsMapper.listByProviderIdPage(goodsPage);
             if (CollectionUtils.isEmpty(goodsEsList)) {
                 break;
             } else {
@@ -96,24 +87,21 @@ public class GoodsExecutor implements ElasticSearchExecutor {
                 final List<GoodsEs> esList = goodsEsList.parallelStream().filter(Objects::nonNull)
                         .map(goodsEs -> {
                             final List<ProviderRegionEs> providerRegionEsList =
-                                    providerRegionEsMapper.listByProviderId(goodsEs.getProviderId());
+                                    providerRegionEsMapper.listByProviderId(providerId);
                             goodsEs.setRegions(providerRegionEsList);
                             return goodsEs;
                         }).collect(Collectors.toList());
-                /**
-                 * 封装成handlerEntity 异步提交
-                 */
                 CompletableFuture.supplyAsync(() -> {
                     HandlerEntity<GoodsEs> handlerEntity = new HandlerEntity<>();
                     handlerEntity.setType(EsConfigTypeEnum.GOODS.getCode());
                     handlerEntity.setHandler(GoodsHandler.class);
-                    handlerEntity.setIndex(index);
-                    handlerEntity.setIndexType(type);
+                    handlerEntity.setIndex(ConstantSearch.INDEX);
+                    handlerEntity.setIndexType(ConstantSearch.GOODS_TYPE);
                     handlerEntity.setData(esList);
                     return handlerEntity;
                 }).thenAccept(concurrentHandler::submit);
             }
-            LogUtil.info(LOGGER, "当前处理页数为：{}", currentPage);
+            LogUtil.info(LOGGER, changeEvent.getEventName()+",当前处理页数为：{}", currentPage);
             //分页处理
             pageParameter = goodsPage.getPage();
             final int totalPage = pageParameter.getTotalPage();
@@ -122,35 +110,6 @@ public class GoodsExecutor implements ElasticSearchExecutor {
             }
             currentPage++;
         }
-        //更新处理时间
-        updateLastTime();
-    }
-
-    /**
-     * 更新最后操作时间
-     */
-    private void updateLastTime() {
-        final EsConfig byType = getByType(EsConfigTypeEnum.GOODS.getCode());
-        byType.setLastTime(new Date());
-        esConfigMapper.update(byType);
-
-    }
-
-    /**
-     * 获取上一次操作时间
-     *
-     * @return byType.getLastTime()
-     */
-    private String getLastTime() {
-        final EsConfig byType = getByType(EsConfigTypeEnum.GOODS.getCode());
-        if (Objects.nonNull(byType)) {
-            return DATE_FORMAT.format(byType.getLastTime());
-        }
-        return ConstantSearch.DEFAULT_LAST_TIME;
-    }
-
-    private EsConfig getByType(int type) {
-        return esConfigMapper.getByType(type);
     }
 
 

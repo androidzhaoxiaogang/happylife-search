@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.happylifeplat.service.search.mapper.GoodsEsMapper" >
+<mapper namespace="com.happylifeplat.service.search.mapper.GoodsEsMapper">
     <resultMap id="ResultMap" type="com.happylifeplat.service.search.entity.GoodsEs">
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
@@ -30,16 +30,27 @@
     </sql>
 
     <select id="listByUpdateTime" resultMap="ResultMap" parameterType="java.lang.String">
-        SELECT    <include refid="Base_Column_List"/>
-        FROM goods WHERE  1= 1
-        AND   update_time  > #{updateTime ,jdbcType=VARCHAR}
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM goods WHERE 1= 1
+        AND update_time > #{updateTime ,jdbcType=VARCHAR}
     </select>
 
 
     <select id="listPage" resultMap="ResultMap" parameterType="com.happylifeplat.service.search.query.GoodsPage">
-        SELECT    <include refid="Base_Column_List"/>
-        FROM goods WHERE  1= 1
-        AND   update_time  > #{updateTime ,jdbcType=VARCHAR}
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM goods WHERE 1= 1
+        AND update_time > #{updateTime ,jdbcType=VARCHAR}
+    </select>
+
+    <select id="listByProviderIdPage" resultMap="ResultMap"
+            parameterType="com.happylifeplat.service.search.query.GoodsPage">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM goods WHERE 1= 1
+        AND provider_id = #{providerId ,jdbcType=VARCHAR}
+        AND is_invalid =0 AND is_disable = 0
     </select>
 
 </mapper>

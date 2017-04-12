@@ -1,8 +1,11 @@
 package com.happylifeplat.service.search.entity;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>Description: .</p>
@@ -114,6 +117,20 @@ public class GoodsEs implements Serializable{
      * 支付类型
      */
     private  Integer payType;
+
+
+    /**
+     * 反规范化你的数据  将区域信息存放在商品中
+     */
+    private List<ProviderRegionEs> regions;
+
+    public List<ProviderRegionEs> getRegions() {
+        return regions;
+    }
+
+    public void setRegions(List<ProviderRegionEs> regions) {
+        this.regions = regions;
+    }
 
     public String getId() {
         return id;
@@ -259,4 +276,7 @@ public class GoodsEs implements Serializable{
         this.providerId = providerId;
     }
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);}
 }

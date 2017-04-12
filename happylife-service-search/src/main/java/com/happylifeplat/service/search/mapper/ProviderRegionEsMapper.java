@@ -22,6 +22,7 @@ public interface ProviderRegionEsMapper {
      * @param createTime 创建时间
      * @return List<ProviderRegionEs>
      */
+    @Deprecated
     List<ProviderRegionEs> listByCreateTime(String createTime);
 
     /**
@@ -29,6 +30,14 @@ public interface ProviderRegionEsMapper {
      * @param regionPage 分页参数
      * @return List<ProviderRegionEs>
      */
+    @Deprecated
     List<ProviderRegionEs> listPage(RegionPage regionPage);
+
+    /**
+     * 获取供应商所对应的服务区域
+     * @param providerId 供应商id
+     * @return List<ProviderRegionEs>
+     */
+    List<ProviderRegionEs> listByProviderId(String providerId);
 
 }

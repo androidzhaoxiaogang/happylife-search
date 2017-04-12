@@ -1,5 +1,7 @@
 package com.happylifeplat.service.search.entity;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.io.Serializable;
 
 /**
@@ -16,14 +18,6 @@ public class ProviderRegionEs implements Serializable {
 
     private static final long serialVersionUID = -6407693686404714807L;
 
-
-    private String id;
-
-    /**
-     * 商品id
-     */
-    private String goodsId;
-
     /**
      * 供应商id
      */
@@ -32,30 +26,18 @@ public class ProviderRegionEs implements Serializable {
     /**
      * 服务区域id
      */
-    private String administrativeRegionId;
+    private String regionId;
 
+    public String getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(String regionId) {
+        this.regionId = regionId;
+    }
 
     private Integer status;
 
-    private Integer leafCheckedNumber;
-
-    private Integer leafNumber;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getGoodsId() {
-        return goodsId;
-    }
-
-    public void setGoodsId(String goodsId) {
-        this.goodsId = goodsId;
-    }
 
     public String getProviderId() {
         return providerId;
@@ -65,13 +47,7 @@ public class ProviderRegionEs implements Serializable {
         this.providerId = providerId;
     }
 
-    public String getAdministrativeRegionId() {
-        return administrativeRegionId;
-    }
 
-    public void setAdministrativeRegionId(String administrativeRegionId) {
-        this.administrativeRegionId = administrativeRegionId;
-    }
 
     public Integer getStatus() {
         return status;
@@ -81,19 +57,7 @@ public class ProviderRegionEs implements Serializable {
         this.status = status;
     }
 
-    public Integer getLeafCheckedNumber() {
-        return leafCheckedNumber;
-    }
-
-    public void setLeafCheckedNumber(Integer leafCheckedNumber) {
-        this.leafCheckedNumber = leafCheckedNumber;
-    }
-
-    public Integer getLeafNumber() {
-        return leafNumber;
-    }
-
-    public void setLeafNumber(Integer leafNumber) {
-        this.leafNumber = leafNumber;
-    }
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);}
 }

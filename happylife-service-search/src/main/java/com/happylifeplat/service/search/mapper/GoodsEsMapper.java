@@ -31,4 +31,13 @@ public interface GoodsEsMapper {
      * @return List<GoodsEs>
      */
     List<GoodsEs> listPage(GoodsPage goodsPage);
+
+    /**
+     * 根据供应商id 分页查询商品信息
+     * @param goodsPage 分页信息
+     * @return List<GoodsEs>
+     */
+    List<GoodsEs> listByProviderIdPage(GoodsPage goodsPage);
+
+
 }

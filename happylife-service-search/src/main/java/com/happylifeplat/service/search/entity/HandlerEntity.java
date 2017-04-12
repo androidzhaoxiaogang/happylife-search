@@ -1,5 +1,7 @@
 package com.happylifeplat.service.search.entity;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.List;
 
 /**
@@ -82,4 +84,8 @@ public class HandlerEntity<T> {
     public void setData(List<T> data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);}
 }

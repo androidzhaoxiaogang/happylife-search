@@ -1,48 +1,33 @@
 package com.happylifeplat.service.search.executor;
 
-import com.ctrip.framework.apollo.Config;
-import com.ctrip.framework.apollo.model.ConfigChangeEvent;
-import com.ctrip.framework.apollo.spring.annotation.ApolloConfig;
-import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
 import com.happylifeplat.facade.search.enums.EsConfigTypeEnum;
-import com.happylifeplat.plugin.mybatis.pager.PageParameter;
-import com.happylifeplat.service.search.client.ElasticSearchClient;
 import com.happylifeplat.service.search.constant.ConstantSearch;
 import com.happylifeplat.service.search.entity.EsConfig;
-import com.happylifeplat.service.search.entity.GoodsEs;
 import com.happylifeplat.service.search.entity.HandlerEntity;
 import com.happylifeplat.service.search.entity.JobInfo;
 import com.happylifeplat.service.search.entity.ProviderRegionEs;
 import com.happylifeplat.service.search.executor.handler.ConcurrentHandler;
-import com.happylifeplat.service.search.executor.handler.GoodsHandler;
 import com.happylifeplat.service.search.executor.handler.RegionHandler;
 import com.happylifeplat.service.search.helper.LogUtil;
-import com.happylifeplat.service.search.helper.SpringBeanUtils;
-import com.happylifeplat.service.search.helper.SysProps;
 import com.happylifeplat.service.search.mapper.EsConfigMapper;
 import com.happylifeplat.service.search.mapper.ProviderRegionEsMapper;
-import com.happylifeplat.service.search.query.RegionPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * <p>Description: .</p>
  * <p>Company: 深圳市旺生活互联网科技有限公司</p>
  * <p>Copyright: 2015-2017 happylifeplat.com All Rights Reserved</p>
- * 供应商区域处理
+ * 供应商区域处理 废弃
  *
  * @author yu.xiao@happylifeplat.com
  * @version 1.0
@@ -50,6 +35,7 @@ import java.util.stream.Collectors;
  * @since JDK 1.8
  */
 @Component
+@Deprecated
 public class ProviderRegionExecutor implements ElasticSearchExecutor {
 
     /**
@@ -59,23 +45,14 @@ public class ProviderRegionExecutor implements ElasticSearchExecutor {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-
     @Autowired(required = false)
     private ProviderRegionEsMapper providerRegionEsMapper;
 
     @Autowired(required = false)
     private EsConfigMapper esConfigMapper;
 
-    @ApolloConfig
-    private Config config;
-
-    @Value("${region.pageSize:1000}")
-    private int regionPageSize;
-
     @Autowired
     private ConcurrentHandler concurrentHandler;
-
-    private static  volatile  boolean IS_FULL=true;
 
     @Override
     public void execute(JobInfo jobInfo) {
@@ -147,6 +124,9 @@ public class ProviderRegionExecutor implements ElasticSearchExecutor {
     }
 
 
+    /**
+     * 更新最后操作时间
+     */
     private void updateLastTime() {
         final EsConfig byType = getByType(EsConfigTypeEnum.REGION.getCode());
         byType.setLastTime(new Date());
@@ -154,6 +134,10 @@ public class ProviderRegionExecutor implements ElasticSearchExecutor {
 
     }
 
+    /**
+     * 获取上一次操作时间
+     * @return byType.getLastTime()
+     */
     private String getLastTime() {
         final EsConfig byType = getByType(EsConfigTypeEnum.REGION.getCode());
         if (Objects.nonNull(byType)) {
@@ -166,12 +150,4 @@ public class ProviderRegionExecutor implements ElasticSearchExecutor {
         return esConfigMapper.getByType(type);
     }
 
-    @ApolloConfigChangeListener("application")
-    private void pageSizeChangeHandler(ConfigChangeEvent changeEvent) {
-        LogUtil.info(LOGGER, () -> " " + "changeEvent = [" + changeEvent + "]");
-        if (changeEvent.isChanged("region.pageSize")) {
-            regionPageSize = config.getIntProperty("region.pageSize", regionPageSize);
-            LogUtil.info(LOGGER, "region.pageSize {}", () -> regionPageSize);
-        }
-    }
 }

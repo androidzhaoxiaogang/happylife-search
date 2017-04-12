@@ -1,48 +1,17 @@
-# 商品和服务区域的index和type mapping
 
-#建立父子关联关系
-PUT goods
-{
-    "mappings": {
-        "goods": {
-            "properties": {
-                "name": {
-                    "type": "text",
-                    "analyzer": "ik_max_word",
-                    "search_analyzer": "ik_max_word",
-                    "include_in_all": "true",
-                    "boost": 8
-                }
-            }
-        },
-        "region": {
-            "_parent": {
-                "type": "goods"
-            },
-            "properties": {
-                "administrative_region_id": {
-                    "type": "text",
-                    "analyzer": "ik_max_word",
-                    "search_analyzer": "ik_max_word",
-                    "include_in_all": "true",
-                    "boost": 8
-                }
-            }
-        }
-    }
-}
-# 商品分词
+#建立分词
 PUT goods/goods/_mapping
 {
     "goods": {
-        "_all": {
-            "analyzer": "ik_max_word",
-            "search_analyzer": "ik_max_word",
-            "term_vector": "no",
-            "store": "false"
-        },
         "properties": {
             "name": {
+                "type": "text",
+                "analyzer": "ik_max_word",
+                "search_analyzer": "ik_max_word",
+                "include_in_all": "true",
+                "boost": 8
+            },
+           "regions.regionId": {
                 "type": "text",
                 "analyzer": "ik_max_word",
                 "search_analyzer": "ik_max_word",
@@ -52,3 +21,4 @@ PUT goods/goods/_mapping
         }
     }
 }
+
