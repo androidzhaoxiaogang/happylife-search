@@ -21,7 +21,7 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `es_config`;
 CREATE TABLE `es_config` (
   `id` varchar(64) NOT NULL,
-  `type` int(4) NOT NULL COMMENT '类型(0 商品  1 region)',
+  `type` int(4) NOT NULL COMMENT '类型(0 商品)',
   `last_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '上次同步时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -30,4 +30,3 @@ CREATE TABLE `es_config` (
 -- Records of es_config
 -- ----------------------------
 INSERT INTO `es_config` VALUES ('a81994b3-4553-4c3e-ade8-ce8a24989aa4', '0', '2015-01-01 00:00:00');
-INSERT INTO `es_config` VALUES ('a81994b3-4553-4c3e-ade8-ce8a24989aa5', '1', '2015-01-01 00:00:00');

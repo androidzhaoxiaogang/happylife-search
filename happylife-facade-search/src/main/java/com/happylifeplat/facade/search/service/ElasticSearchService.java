@@ -37,14 +37,14 @@ public interface ElasticSearchService {
     /**
      *  商品类型更改触发事件接口
      *  会rebuild es索引中的商品类型名称信息，请异步调用
-     * @param goodsTypeId
+     * @param goodsTypeId 商品类型id
      */
     void fireGoodsTypeChangeEvent(String goodsTypeId);
 
     /**
      *  供应商信息更改触发事件
      *   会rebuild es索引中的供应商名称（暂时）信息，请异步调用
-     * @param providerId
+     * @param providerId 供应商id
      */
     void fireProviderChangeEvent(String providerId);
 

@@ -1,7 +1,6 @@
 package com.happylifeplat.service.search.event;
 
 import com.happylifeplat.service.search.entity.GoodsEs;
-import com.happylifeplat.service.search.entity.ProviderRegionEs;
 import com.happylifeplat.service.search.event.bean.ChangeEvent;
 import com.happylifeplat.service.search.executor.handler.update.GoodsTypeUpdateHandler;
 import com.happylifeplat.service.search.helper.LogUtil;

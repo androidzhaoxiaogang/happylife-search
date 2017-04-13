@@ -108,7 +108,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
      * 商品类型更改触发事件接口
      * 会rebuild es索引中的商品类型名称信息，请异步调用
      *
-     * @param goodsTypeId
+     * @param goodsTypeId 商品类型id
      */
     @Override
     public void fireGoodsTypeChangeEvent(String goodsTypeId) {
@@ -121,7 +121,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
      * 供应商信息更改触发事件
      * 会rebuild es索引中的供应商名称（暂时）信息，请异步调用
      *
-     * @param providerId
+     * @param providerId 供应商id
      */
     @Override
     public void fireProviderChangeEvent(String providerId) {
@@ -195,14 +195,11 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 
         searchEntity.setFieldMap(fieldMap);
 
-        /**
-         * 分页信息
-         */
         searchEntity.setPage(searchRequest.getPage());
         searchEntity.setSize(searchRequest.getSize());
 
-        /**
-         * 排序
+        /*
+          排序
          */
         searchEntity.setSortOrder(searchRequest.getSort());
         if (Objects.equals(searchRequest.getSortType(), SortTypeEnum.PRICE.toString())) {
