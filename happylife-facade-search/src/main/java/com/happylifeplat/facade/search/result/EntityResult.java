@@ -9,7 +9,8 @@ import java.math.BigDecimal;
  * <p>Description: .</p>
  * <p>Company: 深圳市旺生活互联网科技有限公司</p>
  * <p>Copyright: 2015-2017 happylifeplat.com All Rights Reserved</p>
- *  返回实体类
+ * 返回实体类
+ *
  * @author yu.xiao@happylifeplat.com
  * @version 1.0
  * @date 2017/4/1 10:57
@@ -80,7 +81,6 @@ public class EntityResult implements Serializable {
     /**
      * 供应商id
      */
-
     private String providerId;
 
     /**

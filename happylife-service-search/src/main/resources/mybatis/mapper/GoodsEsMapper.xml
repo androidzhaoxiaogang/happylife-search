@@ -53,4 +53,14 @@
         AND is_invalid =0 AND is_disable = 0
     </select>
 
+
+    <select id="listByGoodsTypeId" resultMap="ResultMap"
+            parameterType="com.happylifeplat.service.search.query.GoodsPage">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM goods WHERE 1= 1
+        AND goods_type_id = #{goodsTypeId ,jdbcType=VARCHAR}
+        AND is_invalid =0 AND is_disable = 0
+    </select>
+
 </mapper>

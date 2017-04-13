@@ -71,10 +71,30 @@ public class ElasticSearchServiceTest extends  BaseTest {
         String providerId = "ca285b69-7192-4996-9c41-ce4686a1b63c";
         elasticSearchService.fireRegionChangeEvent(providerId);
 
-        while (true){
+    }
 
+    @Test
+    public void fireGoodsTypeChangeEvent(){
+        concurrentHandler.init();
+        String goodsTypeId="80D34C42-388E-45C9-A499-32A79C167A43";
+        elasticSearchService.fireGoodsTypeChangeEvent(goodsTypeId);
+        try {
+            Thread.currentThread().sleep(50000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }
 
+    @Test
+    public void fireProviderChangeEvent(){
+        concurrentHandler.init();
+        String providerId = "ca285b69-7192-4996-9c41-ce4686a1b63c";
+        elasticSearchService.fireProviderChangeEvent(providerId);
+        try {
+            Thread.currentThread().sleep(50000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }
