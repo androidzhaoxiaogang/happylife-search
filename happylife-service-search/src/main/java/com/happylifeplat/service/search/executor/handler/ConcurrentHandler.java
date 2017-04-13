@@ -4,6 +4,7 @@ import com.google.common.reflect.Reflection;
 import com.happylifeplat.service.search.constant.ConstantSearch;
 import com.happylifeplat.service.search.entity.HandlerEntity;
 import com.happylifeplat.service.search.helper.Assert;
+import com.happylifeplat.service.search.helper.FixedThreadPoolHelper;
 import com.happylifeplat.service.search.helper.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

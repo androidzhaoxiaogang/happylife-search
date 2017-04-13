@@ -11,11 +11,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.byscroll.BulkByScrollResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -27,12 +31,14 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.hasChildQuery;
 import static org.elasticsearch.index.query.QueryBuilders.hasParentQuery;
@@ -107,11 +113,64 @@ public class ElasticSearchClient {
         return !bulkRequest.get().hasFailures();
     }
 
+
+    /**
+     * 更新商品文档中的region区域
+     *
+     * @param index            索引
+     * @param type             索引类型
+     * @param ids              文档id集合
+     * @param providerRegionEs 更新的区域
+     * @return !bulkRequest.get().hasFailures()
+     * @throws Exception 异常信息
+     */
+    public static boolean updateGoodsRegion(String index, String type, List<String> ids, List<ProviderRegionEs> providerRegionEs) throws Exception {
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        final String regions = objectMapper.writeValueAsString(providerRegionEs);
+        String regionsUpdate = "{" + "\"regions\"" +":" + regions + "}";
+        ids.forEach(id-> bulkRequest.add(client.prepareUpdate(index,type,id).setDoc(regionsUpdate, XContentType.JSON)));
+        return !bulkRequest.get().hasFailures();
+    }
+
+    /**
+     * 批量更新文档中的单个filed字段
+     *
+     * @param index      索引
+     * @param type       类型
+     * @param ids        文档id集合
+     * @param fieldName  field字段名称
+     * @param fieldValue field字段值
+     * @return !bulkRequest.get().hasFailures()
+     */
+    public static boolean updateGoodsField(String index, String type, List<String> ids, String fieldName, String fieldValue) {
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        ids.forEach(id -> {
+            try {
+                final XContentBuilder xContentBuilder =
+                        jsonBuilder().startObject().field(fieldName, fieldValue).endObject();
+                bulkRequest.add(client.prepareUpdate(index, type, id).setDoc(xContentBuilder));
+            } catch (IOException e) {
+                LogUtil.error(LOGGER, "updateGoodsField json格式化异常:{}", e::getMessage);
+            }
+        });
+        return !bulkRequest.get().hasFailures();
+    }
+
+
+    /**
+     * 根据文档id删除
+     *
+     * @param index 索引
+     * @param type  索引类型
+     * @param ids   文档id集合
+     * @return !bulkRequest.get().hasFailures()
+     */
     public static boolean bulkDelete(String index, String type, List<String> ids) {
         BulkRequestBuilder bulkRequest = client.prepareBulk();
         ids.forEach(id -> bulkRequest.add(client.prepareDelete(index, type, id)));
         return !bulkRequest.get().hasFailures();
     }
+
 
     public static void bulkDeleteRegion(String index, List<String> providerIds) {
         providerIds.forEach(providerId -> {
@@ -135,13 +194,13 @@ public class ElasticSearchClient {
      */
     public static boolean bulkRegionIndex(String index, String type, List<ProviderRegionEs> list) {
         BulkRequestBuilder bulkRequest = client.prepareBulk();
-        list.forEach(providerRegionEs ->{
+        list.forEach(providerRegionEs -> {
             try {
                 final String regionJson = objectMapper.writeValueAsString(providerRegionEs);
                 bulkRequest.add(
                         client.prepareIndex(index, type)
                                 .setParent("")
-                                .setSource(regionJson,XContentType.JSON));
+                                .setSource(regionJson, XContentType.JSON));
             } catch (JsonProcessingException e) {
                 LogUtil.error(LOGGER, "商品对象json格式化异常:{}", e::getMessage);
             }

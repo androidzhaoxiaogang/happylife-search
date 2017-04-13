@@ -65,6 +65,12 @@ public class EntityResult implements Serializable {
      */
     private String goodsTypeId;
 
+
+    /**
+     * 商品类型名称
+     */
+    private String goodsTypeName;
+
     /**
      * 商品类别id
      */
@@ -74,7 +80,19 @@ public class EntityResult implements Serializable {
     /**
      * 供应商id
      */
+
     private String providerId;
+
+    /**
+     * 供应商名称
+     */
+    private String providerName;
+
+    /**
+     * 商品缩略图url
+     */
+    private String thumbnail;
+
 
     public String getId() {
         return id;
@@ -162,6 +180,30 @@ public class EntityResult implements Serializable {
 
     public void setProviderId(String providerId) {
         this.providerId = providerId;
+    }
+
+    public String getGoodsTypeName() {
+        return goodsTypeName;
+    }
+
+    public void setGoodsTypeName(String goodsTypeName) {
+        this.goodsTypeName = goodsTypeName;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     @Override

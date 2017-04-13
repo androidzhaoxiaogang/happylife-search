@@ -1,4 +1,4 @@
-package com.happylifeplat.service.search.executor.handler;
+package com.happylifeplat.service.search.helper;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 

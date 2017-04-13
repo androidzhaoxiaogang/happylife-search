@@ -124,11 +124,14 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
                                 entityResult.setName(String.valueOf(source.get("name")));
                                 entityResult.setGoodsCategoryId(String.valueOf(source.get("goodsCategoryId")));
                                 entityResult.setGoodsTypeId(String.valueOf(source.get("goodsTypeId")));
+                                entityResult.setGoodsTypeName(String.valueOf(source.get("goodsTypeName")));
                                 entityResult.setProviderId(String.valueOf(source.get("providerId")));
-                                entityResult.setOriginalPrice((BigDecimal) source.get("originalPrice"));
+                                entityResult.setProviderName(String.valueOf(source.get("providerName")));
+                                entityResult.setThumbnail(String.valueOf(source.get("thumbnail")));
                                 entityResult.setPrice((BigDecimal) source.get("price"));
-                                entityResult.setBarcode(String.valueOf(source.get("barcode")));
                                 entityResult.setCostPrice((BigDecimal) source.get("costPrice"));
+                                entityResult.setOriginalPrice((BigDecimal) source.get("originalPrice"));
+                                entityResult.setBarcode(String.valueOf(source.get("barcode")));
                                 entityResult.setCode(String.valueOf(source.get("code")));
                             }
                             return entityResult;

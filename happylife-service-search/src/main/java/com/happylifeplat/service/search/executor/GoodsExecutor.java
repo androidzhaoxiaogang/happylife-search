@@ -17,6 +17,9 @@ import com.happylifeplat.service.search.executor.handler.GoodsHandler;
 import com.happylifeplat.service.search.helper.LogUtil;
 import com.happylifeplat.service.search.mapper.EsConfigMapper;
 import com.happylifeplat.service.search.mapper.GoodsEsMapper;
+import com.happylifeplat.service.search.mapper.GoodsImageEsMapper;
+import com.happylifeplat.service.search.mapper.GoodsTypeEsMapper;
+import com.happylifeplat.service.search.mapper.ProviderEsMapper;
 import com.happylifeplat.service.search.mapper.ProviderRegionEsMapper;
 import com.happylifeplat.service.search.query.GoodsPage;
 import org.apache.commons.collections.CollectionUtils;
@@ -62,6 +65,15 @@ public class GoodsExecutor implements ElasticSearchExecutor {
     private ProviderRegionEsMapper providerRegionEsMapper;
 
     @Autowired(required = false)
+    private GoodsImageEsMapper goodsImageEsMapper;
+
+    @Autowired(required = false)
+    private ProviderEsMapper providerEsMapper;
+
+    @Autowired(required = false)
+    private GoodsTypeEsMapper goodsTypeEsMapper;
+
+    @Autowired(required = false)
     private EsConfigMapper esConfigMapper;
 
     @Autowired
@@ -92,12 +104,25 @@ public class GoodsExecutor implements ElasticSearchExecutor {
             if (CollectionUtils.isEmpty(goodsEsList)) {
                 break;
             } else {
-                //设置商品对应的服务区域
+                //设置商品对应的服务区域,类型名称，供应商名称，图片信息
                 final List<GoodsEs> esList = goodsEsList.parallelStream().filter(Objects::nonNull)
                         .map(goodsEs -> {
-                            final List<ProviderRegionEs> providerRegionEsList =
-                                    providerRegionEsMapper.listByProviderId(goodsEs.getProviderId());
-                            goodsEs.setRegions(providerRegionEsList);
+                            try {
+                                //设置主图
+                                final String primaryImageUrl = goodsImageEsMapper.findPrimaryImageUrlByGoodsId(goodsEs.getId());
+                                goodsEs.setThumbnail(primaryImageUrl);
+                                //设置供应商名称
+                                final String providerName = providerEsMapper.getNameById(goodsEs.getProviderId());
+                                goodsEs.setProviderName(providerName);
+                                //设置分类名称
+                                final String goodsTypeName = goodsTypeEsMapper.getNameById(goodsEs.getGoodsTypeId());
+                                goodsEs.setGoodsTypeName(goodsTypeName);
+                                final List<ProviderRegionEs> providerRegionEsList =
+                                        providerRegionEsMapper.listByProviderId(goodsEs.getProviderId());
+                                goodsEs.setRegions(providerRegionEsList);
+                            } catch (Exception e) {
+                                LogUtil.error(LOGGER,"查询分类，供应商，区域信息异常:{}",e::getLocalizedMessage);
+                            }
                             return goodsEs;
                         }).collect(Collectors.toList());
                 /**

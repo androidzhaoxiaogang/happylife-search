@@ -69,6 +69,11 @@ public class GoodsEs implements Serializable{
     private String goodsTypeId;
 
     /**
+     * 商品类型名称
+     */
+    private String goodsTypeName;
+
+    /**
      * 商品类别id
      */
     private String goodsCategoryId;
@@ -79,6 +84,12 @@ public class GoodsEs implements Serializable{
      */
 
     private String providerId;
+
+    /**
+     * 供应商名称
+     */
+    private String providerName;
+
 
     /**
      * 商品状态
@@ -274,6 +285,22 @@ public class GoodsEs implements Serializable{
 
     public void setProviderId(String providerId) {
         this.providerId = providerId;
+    }
+
+    public String getGoodsTypeName() {
+        return goodsTypeName;
+    }
+
+    public void setGoodsTypeName(String goodsTypeName) {
+        this.goodsTypeName = goodsTypeName;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
     }
 
     @Override
