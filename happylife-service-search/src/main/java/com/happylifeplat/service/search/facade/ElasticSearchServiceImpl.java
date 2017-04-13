@@ -7,20 +7,21 @@ import com.happylifeplat.commons.validator.BeanValidator;
 import com.happylifeplat.commons.validator.ResponseError;
 import com.happylifeplat.facade.search.entity.SearchRequest;
 import com.happylifeplat.facade.search.enums.ResultCodeEnum;
-import com.happylifeplat.facade.search.result.EntityResult;
-import com.happylifeplat.facade.search.result.SearchResult;
 import com.happylifeplat.facade.search.enums.SortTypeEnum;
 import com.happylifeplat.facade.search.exception.SearchException;
+import com.happylifeplat.facade.search.result.EntityResult;
+import com.happylifeplat.facade.search.result.SearchResult;
 import com.happylifeplat.facade.search.service.ElasticSearchService;
 import com.happylifeplat.service.search.client.ElasticSearchClient;
 import com.happylifeplat.service.search.constant.ConstantSearch;
+import com.happylifeplat.service.search.event.GoodsTypeChangeEvent;
+import com.happylifeplat.service.search.event.ProviderChangeEvent;
 import com.happylifeplat.service.search.event.RegionChangeEvent;
 import com.happylifeplat.service.search.event.bean.ChangeEvent;
 import com.happylifeplat.service.search.helper.LogUtil;
 import com.happylifeplat.service.search.helper.RegionIdUtils;
 import com.happylifeplat.service.search.query.SearchEntity;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.map.HashedMap;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
@@ -28,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.parser.Entity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,6 +63,12 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
     @Autowired(required = false)
     private RegionChangeEvent regionChangeEvent;
 
+    @Autowired(required = false)
+    private GoodsTypeChangeEvent goodsTypeChangeEvent;
+
+    @Autowired(required = false)
+    private ProviderChangeEvent providerChangeEvent;
+
     /**
      * es 查询接口
      *
@@ -73,11 +79,11 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
     @Override
     public SearchResult search(SearchRequest searchRequest) throws SearchException {
         final ResponseError responseError = beanValidator.validator(searchRequest);
-        if(!responseError.isSuccessful()){
+        if (!responseError.isSuccessful()) {
             SearchResult searchResult = new SearchResult();
             searchResult.setCode(responseError.getCode());
             searchResult.setMessage(ResultCodeEnum.getMessageByCode(responseError.getCode()));
-            return  searchResult;
+            return searchResult;
         }
         LogUtil.info(LOGGER, () -> "查询参数：searchRequest = [" + searchRequest.toString() + "]");
         SearchEntity searchEntity = buildSearchEntity(searchRequest);
@@ -93,8 +99,34 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
      */
     @Override
     public void fireRegionChangeEvent(String providerId) {
-        if(StringUtils.isNoneBlank(providerId)) {
-            regionChangeEvent.fireChangeEvent(new ChangeEvent("RegionChange",providerId));
+        if (StringUtils.isNoneBlank(providerId)) {
+            regionChangeEvent.fireChangeEvent(new ChangeEvent("RegionChange", providerId));
+        }
+    }
+
+    /**
+     * 商品类型更改触发事件接口
+     * 会rebuild es索引中的商品类型名称信息，请异步调用
+     *
+     * @param goodsTypeId
+     */
+    @Override
+    public void fireGoodsTypeChangeEvent(String goodsTypeId) {
+        if (StringUtils.isNoneBlank(goodsTypeId)) {
+            goodsTypeChangeEvent.fireChangeEvent(new ChangeEvent("GoodsTypeChange", goodsTypeId));
+        }
+    }
+
+    /**
+     * 供应商信息更改触发事件
+     * 会rebuild es索引中的供应商名称（暂时）信息，请异步调用
+     *
+     * @param providerId
+     */
+    @Override
+    public void fireProviderChangeEvent(String providerId) {
+        if (StringUtils.isNoneBlank(providerId)) {
+            providerChangeEvent.fireChangeEvent(new ChangeEvent("ProviderChange", providerId));
         }
     }
 
@@ -158,8 +190,8 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
         searchEntity.setKeywords(searchRequest.getKeywords());
 
         Map<String, Object> fieldMap = new HashMap<>();
-        fieldMap.put("name",searchRequest.getKeywords());
-        fieldMap.put("regions.regionId",RegionIdUtils.convert(searchRequest.getRegionId()));
+        fieldMap.put("name", searchRequest.getKeywords());
+        fieldMap.put("regions.regionId", RegionIdUtils.convert(searchRequest.getRegionId()));
 
         searchEntity.setFieldMap(fieldMap);
 

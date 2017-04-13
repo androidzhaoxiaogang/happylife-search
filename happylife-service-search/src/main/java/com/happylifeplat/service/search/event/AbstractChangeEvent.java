@@ -76,7 +76,6 @@ public abstract class AbstractChangeEvent implements ApplicationContextChangeEve
                 handlerEntity.setData(goodsEsList);
                 return handlerEntity;
             }).thenAccept(concurrentHandler::submit);
-            LogUtil.info(LOGGER, changeEvent.getEventName() + ",当前处理页数为：{}", currentPage);
             //分页处理
             pageParameter = goodsPage.getPage();
             final int totalPage = pageParameter.getTotalPage();

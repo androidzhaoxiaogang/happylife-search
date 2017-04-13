@@ -4,6 +4,7 @@ import com.happylifeplat.service.search.entity.GoodsEs;
 import com.happylifeplat.service.search.entity.ProviderRegionEs;
 import com.happylifeplat.service.search.event.bean.ChangeEvent;
 import com.happylifeplat.service.search.executor.handler.update.RegionUpdateHandler;
+import com.happylifeplat.service.search.helper.LogUtil;
 import com.happylifeplat.service.search.mapper.GoodsEsMapper;
 import com.happylifeplat.service.search.mapper.ProviderRegionEsMapper;
 import com.happylifeplat.service.search.query.GoodsPage;
@@ -45,6 +46,7 @@ public class RegionChangeEvent extends AbstractChangeEvent {
 
     @Override
     public List<GoodsEs> dataHandler(ChangeEvent changeEvent, GoodsPage goodsPage) {
+        LogUtil.info(LOGGER, " " + "changeEvent = [" + changeEvent + "], goodsPage = [" + goodsPage + "]");
         final String providerId = (String) changeEvent.getData();
         goodsPage.setProviderId(providerId);
         final List<GoodsEs> goodsEsList = goodsEsMapper.listByProviderIdPage(goodsPage);

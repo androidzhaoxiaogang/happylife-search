@@ -27,9 +27,25 @@ public interface ElasticSearchService {
 
 
     /**
-     * 供应商更改区域 触发事件，会rebuild es索引，请异步调用
+     * 供应商更改区域 触发事件，
+     * 会rebuild es索引中的区域信息，请异步调用
      * @param providerId 供应商id
      */
     void fireRegionChangeEvent(String providerId);
+
+
+    /**
+     *  商品类型更改触发事件接口
+     *  会rebuild es索引中的商品类型名称信息，请异步调用
+     * @param goodsTypeId
+     */
+    void fireGoodsTypeChangeEvent(String goodsTypeId);
+
+    /**
+     *  供应商信息更改触发事件
+     *   会rebuild es索引中的供应商名称（暂时）信息，请异步调用
+     * @param providerId
+     */
+    void fireProviderChangeEvent(String providerId);
 
 }

@@ -38,6 +38,11 @@ public class GoodsPage implements Serializable {
      */
     private String providerId;
 
+    /**
+     * 商品类型id
+     */
+    private String goodsTypeId;
+
     public String getProviderId() {
         return providerId;
     }
@@ -68,5 +73,24 @@ public class GoodsPage implements Serializable {
 
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
+    }
+
+    public String getGoodsTypeId() {
+        return goodsTypeId;
+    }
+
+    public void setGoodsTypeId(String goodsTypeId) {
+        this.goodsTypeId = goodsTypeId;
+    }
+
+    @Override
+    public String toString() {
+        return "GoodsPage{" +
+                "page=" + page +
+                ", orderBy='" + orderBy + '\'' +
+                ", updateTime='" + updateTime + '\'' +
+                ", providerId='" + providerId + '\'' +
+                ", goodsTypeId='" + goodsTypeId + '\'' +
+                '}';
     }
 }
