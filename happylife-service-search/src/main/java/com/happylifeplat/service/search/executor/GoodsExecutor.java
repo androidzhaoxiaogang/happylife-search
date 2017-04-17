@@ -92,6 +92,8 @@ public class GoodsExecutor implements ElasticSearchExecutor {
         final String index = jobInfo.getIndex();
         final String type = jobInfo.getType();
         final String updateTime = getLastTime();
+        //更新处理时间 防止在执行时候，有新的数据更改
+        updateLastTime();
         int currentPage = 1;
         PageParameter pageParameter = new PageParameter();
         pageParameter.setPageSize(goodsPageSize);
@@ -147,8 +149,6 @@ public class GoodsExecutor implements ElasticSearchExecutor {
             }
             currentPage++;
         }
-        //更新处理时间
-        updateLastTime();
     }
 
     /**

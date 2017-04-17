@@ -26,6 +26,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
@@ -309,14 +310,15 @@ public class ElasticSearchClient {
 
         fieldMap.forEach((key, value) -> bqb.must(matchQuery(key, value)));
 
+
         SearchResponse response = client.prepareSearch(index)
                 .setTypes(type)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(bqb)
+                .addSort(SortBuilders.scoreSort())
                 .addSort(searchEntity.getOrderField(), sortOrder)
                 .setFrom(searchEntity.getPage())
                 .setSize(searchEntity.getSize())
-                .setExplain(true)
                 .execute()
                 .actionGet();
         LogUtil.info(LOGGER, () ->
@@ -352,7 +354,6 @@ public class ElasticSearchClient {
                 .addSort(searchEntity.getOrderField(), sortOrder)
                 .setFrom(searchEntity.getPage())
                 .setSize(searchEntity.getSize())
-                .setExplain(true)
                 .execute()
                 .actionGet();
         LogUtil.info(LOGGER, () ->
@@ -375,7 +376,7 @@ public class ElasticSearchClient {
         } else if (Objects.equals(OrderByEnum.DESC.toString(), searchEntity.getSortOrder())) {
             sortOrder = SortOrder.DESC;
         } else {
-            sortOrder = SortOrder.ASC;
+            sortOrder = SortOrder.DESC;
         }
         return sortOrder;
     }

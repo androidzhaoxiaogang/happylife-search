@@ -2,7 +2,6 @@ package com.happylifeplat.service.search.facade;
 
 
 import com.google.common.collect.Lists;
-import com.happylifeplat.commons.utils.StringUtils;
 import com.happylifeplat.commons.validator.BeanValidator;
 import com.happylifeplat.commons.validator.ResponseError;
 import com.happylifeplat.facade.search.entity.SearchRequest;
@@ -22,6 +21,7 @@ import com.happylifeplat.service.search.helper.LogUtil;
 import com.happylifeplat.service.search.helper.RegionIdUtils;
 import com.happylifeplat.service.search.query.SearchEntity;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
@@ -148,26 +148,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
             final ArrayList<SearchHit> searchHits = Lists.newArrayList(response.getHits().getHits());
             if (CollectionUtils.isNotEmpty(searchHits)) {
                 final List<EntityResult> entityResultList = searchHits.stream().filter(Objects::nonNull)
-                        .map(searchHit -> {
-                            final Map<String, Object> source = searchHit.getSource();
-                            EntityResult entityResult = new EntityResult();
-                            if (source != null) {
-                                entityResult.setId(String.valueOf(source.get("id")));
-                                entityResult.setName(String.valueOf(source.get("name")));
-                                entityResult.setGoodsCategoryId(String.valueOf(source.get("goodsCategoryId")));
-                                entityResult.setGoodsTypeId(String.valueOf(source.get("goodsTypeId")));
-                                entityResult.setGoodsTypeName(String.valueOf(source.get("goodsTypeName")));
-                                entityResult.setProviderId(String.valueOf(source.get("providerId")));
-                                entityResult.setProviderName(String.valueOf(source.get("providerName")));
-                                entityResult.setThumbnail(String.valueOf(source.get("thumbnail")));
-                                entityResult.setPrice((BigDecimal) source.get("price"));
-                                entityResult.setCostPrice((BigDecimal) source.get("costPrice"));
-                                entityResult.setOriginalPrice((BigDecimal) source.get("originalPrice"));
-                                entityResult.setBarcode(String.valueOf(source.get("barcode")));
-                                entityResult.setCode(String.valueOf(source.get("code")));
-                            }
-                            return entityResult;
-                        }).collect(Collectors.toList());
+                        .map(this::buildEntityResultBySearchHit).collect(Collectors.toList());
                 searchResult.setEntityResultList(entityResultList);
             }
         } catch (Exception e) {
@@ -179,6 +160,38 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
         return searchResult;
     }
 
+
+    /**
+     * 构建返回对象实体
+     * @param searchHit
+     * @return
+     */
+    private EntityResult buildEntityResultBySearchHit(SearchHit searchHit){
+        final Map<String, Object> source = searchHit.getSource();
+        EntityResult entityResult = new EntityResult();
+        if (source != null) {
+            entityResult.setId(String.valueOf(source.get("id")));
+            entityResult.setName(String.valueOf(source.get("name")));
+            entityResult.setGoodsCategoryId(String.valueOf(source.get("goodsCategoryId")));
+            entityResult.setGoodsTypeId(String.valueOf(source.get("goodsTypeId")));
+            entityResult.setGoodsTypeName(String.valueOf(source.get("goodsTypeName")));
+            entityResult.setProviderId(String.valueOf(source.get("providerId")));
+            entityResult.setProviderName(String.valueOf(source.get("providerName")));
+            entityResult.setThumbnail(String.valueOf(source.get("thumbnail")));
+            if(Objects.nonNull(source.get("price"))){
+                entityResult.setPrice(new BigDecimal(String.valueOf(source.get("price"))));
+            }
+            if(Objects.nonNull(source.get("costPrice"))){
+                entityResult.setPrice(new BigDecimal(String.valueOf(source.get("costPrice"))));
+            }
+            if(Objects.nonNull(source.get("originalPrice"))){
+                entityResult.setPrice(new BigDecimal(String.valueOf(source.get("originalPrice"))));
+            }
+            entityResult.setBarcode(String.valueOf(source.get("barcode")));
+            entityResult.setCode(String.valueOf(source.get("code")));
+        }
+        return  entityResult;
+    }
     /**
      * 根据前台搜索信息 ，构建查询条件
      *

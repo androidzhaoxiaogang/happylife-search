@@ -59,10 +59,10 @@ public class ElasticSearchServiceTest extends  BaseTest {
     @Test
     public void search() throws Exception {
         SearchRequest searchRequest = new SearchRequest();
-        searchRequest.setKeywords("发哥");
-        searchRequest.setRegionId("440304001");
+        searchRequest.setKeywords("测试22");
+        searchRequest.setRegionId("110229");
         final SearchResult searchResult = elasticSearchService.search(searchRequest);
-        LogUtil.info(LOGGER, "查询的结果为：{}", searchResult);
+        LogUtil.info(LOGGER, "查询的结果为：{}", searchResult.getEntityResultList());
     }
 
     @Test
