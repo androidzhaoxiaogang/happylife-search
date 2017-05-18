@@ -33,6 +33,7 @@ public class GoodsTypeUpdateHandler implements ElasticSearchHandler<GoodsEs> {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsTypeUpdateHandler.class);
 
+
     /**
      * elastic 构建索引处理接口
      *
