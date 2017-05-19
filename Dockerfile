@@ -9,6 +9,5 @@ ENV APP_NAME=happylife-service-search
 ENV JAR_PATH=/happylife-service-search.jar
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p /logs/
-ADD happylife-service-search/target/happylife-service-search.jar $JAR_PATH
-COPY ./entrypoint.sh /
+ADD target/happylife-service-search.jar $JAR_PATH
 CMD java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar $JAR_PATH

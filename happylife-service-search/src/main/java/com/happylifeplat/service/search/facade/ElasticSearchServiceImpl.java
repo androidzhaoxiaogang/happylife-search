@@ -163,8 +163,8 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 
     /**
      * 构建返回对象实体
-     * @param searchHit
-     * @return
+     * @param searchHit es返回的实体
+     * @return EntityResult
      */
     private EntityResult buildEntityResultBySearchHit(SearchHit searchHit){
         final Map<String, Object> source = searchHit.getSource();
