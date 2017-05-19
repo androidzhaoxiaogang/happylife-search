@@ -5,9 +5,9 @@ server:
 
 logging:
     level:
-        root: debug
+        root: error
         org.springframework.web: debug
-        org.apache.ibatis: debug
+        org.apache.ibatis: error
         com.happylifeplat.bonuspoint: debug
         com.happylifeplat.lottery: debug
         com.happylifeplat: debug
