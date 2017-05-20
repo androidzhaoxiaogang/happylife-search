@@ -6,11 +6,11 @@ server:
 logging:
     level:
         root: error
-        org.springframework.web: debug
-        org.apache.ibatis: error
-        com.happylifeplat.bonuspoint: debug
-        com.happylifeplat.lottery: debug
-        com.happylifeplat: debug
+        org.springframework.web: info
+        org.apache.ibatis: info
+        com.happylifeplat.bonuspoint: info
+        com.happylifeplat.lottery: info
+        com.happylifeplat: info
     path: "./logs"
 
 
