@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM registry.wang-guanjia.com:5000/java:8
 MAINTAINER happylifeplat
 VOLUME /tmp
 EXPOSE 8093
