@@ -138,7 +138,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
      * @throws SearchException 异常信息
      */
     private SearchResult buildResult(SearchResponse response) throws SearchException {
-        if (response == null || response.getHits() == null) {
+        if (response == null || response.getHits() == null || response.getHits().getHits()==null) {
             throw new SearchException("未查询到到任何数据！");
         }
         SearchResult searchResult = new SearchResult();
