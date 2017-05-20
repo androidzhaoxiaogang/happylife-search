@@ -1,6 +1,6 @@
 server:
   port: 8093
-  address: localhost
+  address: 0.0.0.0
 
 
 logging:
