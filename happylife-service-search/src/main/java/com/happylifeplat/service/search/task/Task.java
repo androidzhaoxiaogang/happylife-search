@@ -1,8 +1,8 @@
 package com.happylifeplat.service.search.task;
 
-import com.happylifeplat.service.search.bootstrap.JobBootstrap;
 import com.happylifeplat.service.search.entity.JobInfo;
 import com.happylifeplat.service.search.executor.ElasticSearchExecutor;
+import com.happylifeplat.service.search.helper.LogUtil;
 import com.happylifeplat.service.search.helper.SpringBeanUtils;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -10,8 +10,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -40,13 +38,13 @@ public class Task implements Job {
         JobDataMap data = context.getJobDetail().getJobDataMap();
         JobInfo info = (JobInfo) data.get("jobInfo");
         if (data.getBoolean("cancel")) {
-            LOGGER.info(info.getName() + " new task just be canceled, this job is in running");
+            LogUtil.debug(LOGGER, info.getName() + " new task just be canceled, this job is in running");
             return;
         }
         //获取配置的job处理对象，进行代理调用
         String executor = info.getExecutor();
-        final ElasticSearchExecutor elasticSearchExecutor =(ElasticSearchExecutor)SpringBeanUtils
-                .getInstance().getBeanByName(executor);
+        final ElasticSearchExecutor elasticSearchExecutor
+                = (ElasticSearchExecutor) SpringBeanUtils.getInstance().getBeanByName(executor);
         elasticSearchExecutor.execute(info);
        /* try {
             Object bean = Class.forName(handler).newInstance();

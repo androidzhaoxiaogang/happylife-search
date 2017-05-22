@@ -88,7 +88,7 @@ public class GoodsExecutor implements ElasticSearchExecutor {
 
     @Override
     public void execute(JobInfo jobInfo) {
-        LogUtil.info(LOGGER, () -> "开始建立商品索引,jobInfo = [" + jobInfo.toString() + "]");
+        LogUtil.debug(LOGGER, () -> "开始建立商品索引,jobInfo = [" + jobInfo.toString() + "]");
         final String index = jobInfo.getIndex();
         final String type = jobInfo.getType();
         final String updateTime = getLastTime();
@@ -123,7 +123,7 @@ public class GoodsExecutor implements ElasticSearchExecutor {
                                         providerRegionEsMapper.listByProviderId(goodsEs.getProviderId());
                                 goodsEs.setRegions(providerRegionEsList);
                             } catch (Exception e) {
-                                LogUtil.error(LOGGER,"查询分类，供应商，区域信息异常:{}",e::getLocalizedMessage);
+                                LogUtil.error(LOGGER,"查询分类，供应商，区域信息异常:{}",e::getMessage);
                             }
                             return goodsEs;
                         }).collect(Collectors.toList());
