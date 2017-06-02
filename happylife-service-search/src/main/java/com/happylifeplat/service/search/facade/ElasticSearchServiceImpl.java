@@ -157,6 +157,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
             LogUtil.error(LOGGER, "数据转换异常！：{}", e::getMessage);
             throw new SearchException(String.join("查询发生异常信息", e.getMessage()));
         }
+        LogUtil.info(LOGGER, () -> "返回数据：searchResult = [" + searchResult+ "]");
         return searchResult;
     }
 

@@ -88,7 +88,7 @@ public class ElasticSearchClient {
         } catch (UnknownHostException e) {
             LogUtil.error(LOGGER, "elasticsearch UnknownHostException 客户端连接失败：{}", e::getMessage);
         }
-        LogUtil.info(LOGGER, () -> "elasticsearch 客户端初始化成功！");
+        LogUtil.info(LOGGER, () -> "elasticsearch 客户端初始化成功！连接的ip为："+ip);
     }
 
 
