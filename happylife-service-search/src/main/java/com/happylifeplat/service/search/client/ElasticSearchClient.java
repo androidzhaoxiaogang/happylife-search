@@ -317,7 +317,7 @@ public class ElasticSearchClient {
                 .setQuery(bqb)
                 .addSort(SortBuilders.scoreSort())
                 .addSort(searchEntity.getOrderField(), sortOrder)
-                .setFrom(searchEntity.getPage())
+                .setFrom(searchEntity.getPage()*searchEntity.getSize())
                 .setSize(searchEntity.getSize())
                 .execute()
                 .actionGet();

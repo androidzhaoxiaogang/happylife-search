@@ -59,6 +59,7 @@ public class ElasticSearchServiceTest extends  BaseTest {
     @Test
     public void search() throws Exception {
         SearchRequest searchRequest = new SearchRequest();
+        searchRequest.setPage(1);
         searchRequest.setKeywords("fff");
         searchRequest.setRegionId("440305007");
         final SearchResult searchResult = elasticSearchService.search(searchRequest);
