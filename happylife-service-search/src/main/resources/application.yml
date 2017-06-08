@@ -11,6 +11,7 @@ logging:
         com.happylifeplat.bonuspoint: info
         com.happylifeplat.lottery: info
         com.happylifeplat: info
+        com.ctrip.framework.apollo: debug
     path: "./logs"
 
 
