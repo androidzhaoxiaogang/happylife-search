@@ -2,6 +2,8 @@ package com.happylifeplat.service.search.client;
 
 import com.happylifeplat.facade.search.service.ElasticSearchService;
 import com.happylifeplat.service.search.helper.LogUtil;
+import org.elasticsearch.action.deletebyquery.DeleteByQueryAction;
+import org.elasticsearch.action.deletebyquery.DeleteByQueryRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -31,20 +33,33 @@ public class ClientTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientTest.class);
 
     public static void main(String[] args) {
+
+        TransportClient client = getClient();
+
+        DeleteByQueryRequestBuilder response = new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE);
+
+        response.setIndices("goods").setTypes("goods").setSource("{\"query\":{\"match_all\":{}}}")
+                .execute()
+                .actionGet();
+
+    }
+
+    private static TransportClient getClient() {
         String clusterName = "elasticsearch53";
         String ip = "120.76.52.162";
         Integer port = 9300;
         //es集群的设置信息
+        TransportClient client=null;
         Settings settings = Settings.builder().put("client.transport.sniff", true)
                 .put("cluster.name", clusterName).build();
         try {
-            TransportClient client = new PreBuiltTransportClient(settings)
+            client = new PreBuiltTransportClient(settings)
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ip), port));
             final SearchResponse searchResponse = client.prepareSearch("goods").setTypes("goods").get();
             LogUtil.info(LOGGER, "数据:{}", searchResponse);
         } catch (UnknownHostException e) {
             LogUtil.error(LOGGER, "elasticsearch UnknownHostException 客户端连接失败：{}", e::getMessage);
         }
-
+        return client;
     }
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.happylifeplat.service.search.mapper.GoodsTypeEsMapper" >
 
     <select id="getNameById" resultType="java.lang.String" parameterType="java.lang.String">
-        SELECT  NAME  FROM  goods_type where id = #{id,jdbcType=VARCHAR} AND is_disable= 0
+        SELECT  NAME  FROM  goods_type where id = #{id,jdbcType=VARCHAR} AND is_disable= 0 limit 0,1
     </select>
 
 

@@ -4,7 +4,7 @@
 
     <select id="findPrimaryImageUrlByGoodsId" resultType="java.lang.String" parameterType="java.lang.String">
         SELECT  url FROM  goods_images where goods_id = #{goodsId,jdbcType=VARCHAR}
-        AND  is_primary = 1
+        AND  is_primary = 1  limit 0,1
     </select>
 
 
