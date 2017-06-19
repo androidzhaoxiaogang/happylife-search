@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @IgnoreScanInTest
 @SpringBootApplication
 @EnableAsync
-@EnableApolloConfig
+@EnableApolloConfig({"application","TEST1.apusic.config"})
 @ImportResource({"classpath:spring/applicationContext.xml"})
 public class Application {
 
