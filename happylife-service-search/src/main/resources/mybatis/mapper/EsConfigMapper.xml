@@ -9,18 +9,18 @@
 
     <select id="getByType" resultMap="ResultMap" parameterType="java.lang.Integer">
          SELECT ID , TYPE ,LAST_TIME
-         FROM ES_CONFIG
+         FROM es_config
          WHERE  type= #{type}
     </select>
 
     <insert id="save" parameterType="com.happylifeplat.service.search.entity.EsConfig" >
-        INSERT INTO ES_CONFIG (ID , TYPE ,LAST_TIME )
+        INSERT INTO es_config (ID , TYPE ,LAST_TIME )
         VALUES (#{id,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},
         #{lastTime,jdbcType=TIMESTAMP})
     </insert>
 
     <update id="update" parameterType="com.happylifeplat.service.search.entity.EsConfig">
-        update ES_CONFIG set  LAST_TIME   = #{lastTime,jdbcType=TIMESTAMP}
+        update es_config set  LAST_TIME   = #{lastTime,jdbcType=TIMESTAMP}
         where ID= #{id,jdbcType=VARCHAR}
     </update>
 
