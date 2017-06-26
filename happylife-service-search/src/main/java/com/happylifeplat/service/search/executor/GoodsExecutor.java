@@ -106,27 +106,6 @@ public class GoodsExecutor implements ElasticSearchExecutor {
             if (CollectionUtils.isEmpty(goodsEsList)) {
                 break;
             } else {
-                //设置商品对应的服务区域,类型名称，供应商名称，图片信息
-                final List<GoodsEs> esList = goodsEsList.parallelStream().filter(Objects::nonNull)
-                        .map(goodsEs -> {
-                            try {
-                                //设置主图
-                                final String primaryImageUrl = goodsImageEsMapper.findPrimaryImageUrlByGoodsId(goodsEs.getId());
-                                goodsEs.setThumbnail(primaryImageUrl);
-                                //设置供应商名称
-                                final String providerName = providerEsMapper.getNameById(goodsEs.getProviderId());
-                                goodsEs.setProviderName(providerName);
-                                //设置分类名称
-                                final String goodsTypeName = goodsTypeEsMapper.getNameById(goodsEs.getGoodsTypeId());
-                                goodsEs.setGoodsTypeName(goodsTypeName);
-                                final List<ProviderRegionEs> providerRegionEsList =
-                                        providerRegionEsMapper.listByProviderId(goodsEs.getProviderId());
-                                goodsEs.setRegions(providerRegionEsList);
-                            } catch (Exception e) {
-                                LogUtil.error(LOGGER,"查询分类，供应商，区域信息异常:{}",e::getMessage);
-                            }
-                            return goodsEs;
-                        }).collect(Collectors.toList());
                 /**
                  * 封装成handlerEntity 异步提交
                  */
@@ -136,7 +115,7 @@ public class GoodsExecutor implements ElasticSearchExecutor {
                     handlerEntity.setHandler(GoodsHandler.class);
                     handlerEntity.setIndex(index);
                     handlerEntity.setIndexType(type);
-                    handlerEntity.setData(esList);
+                    handlerEntity.setData(goodsEsList);
                     return handlerEntity;
                 }).thenAccept(concurrentHandler::submit);
             }

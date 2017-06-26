@@ -28,6 +28,8 @@ public class ProviderRegionEs implements Serializable {
      */
     private String regionId;
 
+    private Integer status;
+
     public String getRegionId() {
         return regionId;
     }
@@ -36,9 +38,6 @@ public class ProviderRegionEs implements Serializable {
         this.regionId = regionId;
     }
 
-    private Integer status;
-
-
     public String getProviderId() {
         return providerId;
     }
@@ -46,8 +45,6 @@ public class ProviderRegionEs implements Serializable {
     public void setProviderId(String providerId) {
         this.providerId = providerId;
     }
-
-
 
     public Integer getStatus() {
         return status;

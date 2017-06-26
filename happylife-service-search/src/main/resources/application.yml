@@ -7,7 +7,7 @@ logging:
     level:
         root: error
         org.springframework.web: info
-        org.apache.ibatis: info
+        org.apache.ibatis: debug
         com.happylifeplat.bonuspoint: info
         com.happylifeplat.lottery: info
         com.happylifeplat: info

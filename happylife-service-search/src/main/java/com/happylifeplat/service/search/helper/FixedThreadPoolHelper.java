@@ -37,7 +37,7 @@ public class FixedThreadPoolHelper {
 
     public ExecutorService getExecutorService() {
         final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("search-thread-%d")
-                .setDaemon(false).build();
+                .setDaemon(true).build();
         return  Executors.newFixedThreadPool(DEFAULT_THREAD_MAX, threadFactory);
     }
 
