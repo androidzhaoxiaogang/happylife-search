@@ -11,6 +11,7 @@
     <artifactId>happylife-service-search</artifactId>
     <packaging>jar</packaging>
     <dependencies>
+
         <!--接口依赖-->
         <dependency>
             <groupId>com.happylife.search</groupId>

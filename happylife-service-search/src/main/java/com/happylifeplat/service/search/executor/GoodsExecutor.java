@@ -62,18 +62,6 @@ public class GoodsExecutor implements ElasticSearchExecutor {
     private GoodsEsMapper goodsEsMapper;
 
     @Autowired(required = false)
-    private ProviderRegionEsMapper providerRegionEsMapper;
-
-    @Autowired(required = false)
-    private GoodsImageEsMapper goodsImageEsMapper;
-
-    @Autowired(required = false)
-    private ProviderEsMapper providerEsMapper;
-
-    @Autowired(required = false)
-    private GoodsTypeEsMapper goodsTypeEsMapper;
-
-    @Autowired(required = false)
     private EsConfigMapper esConfigMapper;
 
     @Autowired
@@ -106,9 +94,14 @@ public class GoodsExecutor implements ElasticSearchExecutor {
             if (CollectionUtils.isEmpty(goodsEsList)) {
                 break;
             } else {
-                /**
-                 * 封装成handlerEntity 异步提交
-                 */
+
+                // 1 如果有真实商品被App渠道的虚拟商品关联，则需要过滤
+                // 2、非APP渠道的虚拟商品，需要过滤
+
+
+
+
+
                 CompletableFuture.supplyAsync(() -> {
                     HandlerEntity<GoodsEs> handlerEntity = new HandlerEntity<>();
                     handlerEntity.setType(EsConfigTypeEnum.GOODS.getCode());

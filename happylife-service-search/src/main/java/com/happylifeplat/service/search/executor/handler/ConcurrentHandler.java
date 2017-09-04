@@ -82,6 +82,7 @@ public class ConcurrentHandler {
         /**
          * 执行..
          */
+        @SuppressWarnings("unchecked")
         private void execute() {
             while (true) {
                 try {
@@ -107,7 +108,7 @@ public class ConcurrentHandler {
 
         private Object handler;
 
-        public EsHandler(Object handler) {
+        EsHandler(Object handler) {
             this.handler = handler;
         }
 

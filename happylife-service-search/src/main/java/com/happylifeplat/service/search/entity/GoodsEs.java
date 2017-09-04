@@ -130,6 +130,8 @@ public class GoodsEs implements Serializable{
     private  Integer payType;
 
 
+
+
     /**
      * 反规范化你的数据  将区域信息存放在商品中
      */

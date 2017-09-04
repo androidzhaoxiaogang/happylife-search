@@ -6,7 +6,7 @@ import com.happylifeplat.service.search.entity.EsConfig;
  * <p>Description: .</p>
  * <p>Company: 深圳市旺生活互联网科技有限公司</p>
  * <p>Copyright: 2015-2017 happylifeplat.com All Rights Reserved</p>
- *  es_config 表 dao
+ *  es_config 表 mapper
  * @author yu.xiao@happylifeplat.com
  * @version 1.0
  * @date 2017/4/10 14:24
